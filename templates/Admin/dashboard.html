@@ -1,0 +1,289 @@
+{% extends 'Admin/base.html' %} 
+{% block content%}
+
+{% if error_message %}
+<div class="row" style='margin-bottom: 23px;' id='message'>     
+    <div class="col-12">       
+        <div class="alert alert-danger shadow" role="alert">
+           {{ error_message }}
+        </div> 
+    </div>
+</div>
+{% endif %}
+
+{% if messages %}
+<div class="row" style='margin-bottom: 23px;' id='message'>      
+    <div class="col-12">       
+        {% for message in messages %}
+        <div class="alert alert-success shadow" role="alert">
+            {{ message }}
+        </div> 
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<script>
+    setTimeout(function () {
+        document.getElementById("message").innerHTML = "";
+    }, 8000);
+</script>
+
+
+<div class="row">       
+        <div class="col-12">  
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <a class="btn btn-info waves-effect waves-light" href="{% url 'Dashboard' %}"> <i class="ri-refresh-line"></i></a>
+            </div>        
+            <form method="GET" action="{% url 'Dashboard' %}" id="dashboardform">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0">Dashboard</h4>
+                    <div class="col-xxl-2 col-md-2">
+                        <div>
+                            <label for="StartDate" class="form-label">Start Date</label>
+                            <input type="date" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" id="StartDate" name='start_date' value="{{ start_date }}">
+                        </div>
+                    </div>
+                    <div class="col-xxl-2 col-md-2">
+                        <div>
+                            <label for="EndDate" class="form-label">End Date</label>
+                            <input type="date" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" id="EndDate" name='end_date' value="{{ end_date }}">
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">                    
+                            <li class="breadcrumb-item active">Dashboard</li>
+                        </ol>
+                    </div>      
+                    
+                </div>
+            </form>
+        </div>
+   
+    
+</div>
+
+<div class="row">
+    <div class="col-xl-4 col-md-6">
+        <!-- card -->
+        <div class="card card-animate">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1 overflow-hidden">
+                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Bookings</p>
+                    </div>                    
+                </div>
+                <div class="d-flex align-items-end justify-content-between mt-4">
+                    <div>
+
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="{{ bookings }}"></span></h4>
+                        
+                    </div>     
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-success rounded fs-3">
+                            {% comment %} <i class="bx bx-dollar-circle"></i> {% endcomment %}
+                            <i class="mdi mdi-home-group-plus"></i>
+                        </span>
+                    </div>               
+                </div>
+            </div><!-- end card body -->
+        </div><!-- end card -->
+    </div><!-- end col -->
+
+    <div class="col-xl-4 col-md-6">
+        <!-- card -->
+        <div class="card card-animate">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1 overflow-hidden">
+                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">New Leads</p>
+                    </div>                    
+                </div>
+                <div class="d-flex align-items-end justify-content-between mt-4">
+                    <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="{{ new_leads }}"></span></h4>
+                    </div>         
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-warning rounded-2 fs-2">
+                            <i data-feather="award"></i>
+                        </span>
+                    </div>           
+                </div>
+            </div><!-- end card body -->
+        </div><!-- end card -->
+    </div><!-- end col -->
+    <div class="col-xl-4 col-md-6">
+        <!-- card -->
+        <div class="card card-animate">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1 overflow-hidden">
+                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0"> Total Leads</p>
+                    </div>                    
+                </div>
+                <div class="d-flex align-items-end justify-content-between mt-4">
+                    <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="{{ total_leads }}"></span> </h4>
+                    </div>        
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-danger rounded fs-3">
+                           <i class="mdi mdi-table-arrow-up"></i>
+                        </span>
+                    </div>            
+                </div>
+            </div><!-- end card body -->
+        </div><!-- end card -->
+    </div><!-- end col -->
+    
+    
+</div> 
+
+<div class="row">
+    <div class="col-xl-4 col-md-6">
+        <!-- card -->
+        <div class="card card-animate">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1 overflow-hidden">
+                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0"> Site Visits</p>
+                    </div>                    
+                </div>
+                <div class="d-flex align-items-end justify-content-between mt-4">
+                    <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="{{ site_visit }}"></span></h4>
+                    </div>     
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-warning rounded fs-3">
+                            <i class="mdi mdi-map-marker-account"></i>
+                        </span>
+                    </div>               
+                </div>
+            </div><!-- end card body -->
+        </div><!-- end card -->
+    </div><!-- end col -->
+    <div class="col-xl-4 col-md-6">
+        <!-- card -->
+        <div class="card card-animate">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1 overflow-hidden">
+                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0"> Home Visits</p>
+                    </div>                    
+                </div>
+                <div class="d-flex align-items-end justify-content-between mt-4">
+                    <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="{{ home_visit }}"></span></h4>
+                    </div>                    
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-success rounded fs-3">
+                            <i class="mdi mdi-home"></i>
+                        </span>
+                    </div>
+                </div>
+            </div><!-- end card body -->
+        </div><!-- end card -->
+    </div><!-- end col -->
+    <div class="col-xl-4 col-md-6">
+        <!-- card -->
+        <div class="card card-animate">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1 overflow-hidden">
+                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0"> Corporate Visits</p>
+                    </div>                    
+                </div>
+                <div class="d-flex align-items-end justify-content-between mt-4">
+                    <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="{{ corporate_visit }}"></span></h4>
+                    </div>    
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-info rounded fs-3">
+                           <i class="mdi mdi-office-building-marker"></i>
+                        </span>
+                    </div>                
+                </div>
+            </div><!-- end card body -->
+        </div><!-- end card -->
+    </div><!-- end col -->
+</div>
+
+<div class="row">
+   
+        <div class="col-xl-6 col-md-6" >
+            <!-- card -->
+                <div class="card card-animate">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1 overflow-hidden">
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-0"> Lead Funnel</p>
+                            </div>                    
+                        </div>
+                        <div class="d-flex align-items-end justify-content-between mt-4">
+                                            
+                            <div class="avatar-sm flex-shrink-0">
+                                <a class="btn btn-danger waves-effect waves-light" href="{% url 'LeadFunnel' %}">Details</a>
+                            </div>
+                        </div>
+                    </div><!-- end card body -->
+                </div><!-- end card -->
+            
+        </div><!-- end col -->
+    
+    <div class="col-xl-6 col-md-6">
+        <!-- card -->
+        <div class="card card-animate">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1 overflow-hidden">
+                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0"> DPR</p>
+                    </div>                    
+                </div>
+                <div class="d-flex align-items-end justify-content-between mt-4">
+                    
+                    <div class="avatar-sm flex-shrink-0">
+                        <a class="btn btn-info waves-effect waves-light" href="{% url 'DailyPerReport' %}">Details</a>
+                    </div>                
+                </div>
+            </div><!-- end card body -->
+        </div><!-- end card -->
+    </div><!-- end col -->
+</div>
+
+
+
+<script>
+    
+
+    var startDateInput = document.getElementById('StartDate');
+    var endDateInput = document.getElementById('EndDate');
+
+
+    startDateInput.addEventListener('change', function() {
+     
+      if (startDateInput.value && endDateInput.value) {
+        
+        document.getElementById('dashboardform').submit();
+      }
+    });
+
+    endDateInput.addEventListener('change', function() {
+      
+      if (startDateInput.value && endDateInput.value) {
+        
+        document.getElementById('dashboardform').submit();
+      }
+    });
+
+    function refreshPage() {
+        var url = "/admin/dashboard/";
+        window.location.href = url;
+    }
+    
+   
+    
+</script>
+
+
+{% endblock %}

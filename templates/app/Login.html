@@ -1,0 +1,171 @@
+<html class=" ">
+    {% load static %}
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+        <title>Login</title>
+        <meta content="Mobile App" name="description" />
+
+        <!-- App Icons -->
+        <link rel="apple-touch-icon" sizes="60x60" href="Form/images/icons/apple-icon-60x60.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="Form/images/icons/favicon-32x32.png">
+        <link rel="manifest" href="Form/images/icons/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="Form/images/icons/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
+
+        <!-- CORE CSS FRAMEWORK - START -->
+        <link href="{% static 'Form/css/preloader.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/>
+        <link href="{% static 'Form/css/materialize.min.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/>
+        <link href="{% static 'Form/fonts/mdi/materialdesignicons.min.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/>
+        <link href="{% static 'Form/plugins/perfect-scrollbar/perfect-scrollbar.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/>
+        <!-- CORE CSS FRAMEWORK - END -->
+
+        <!-- CORE CSS TEMPLATE - START -->
+        <link href="{% static 'Form/css/style.css' %}" type="text/css" rel="stylesheet" media="screen,projection" id="main-style"/>
+        <!-- CORE CSS TEMPLATE - END -->
+    </head>
+    <body class="isfullscreen html">
+        <div class="preloader-background">
+            <div class="preloader-wrapper">
+                <div id="preloader"></div>
+            </div>
+        </div>
+
+        <!-- START navigation -->
+        <nav class="fixedtop topbar navigation" role="navigation">
+            <div class="nav-wrapper container">
+                <a id="logo-container" href="index.html" class=" brand-logo " ><i class="mdi mdi-ring"></i>The Sage</a>
+            </div>
+        </nav>
+        
+        <style>
+            .error-messages {
+                background-color: #f8d7da; 
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+                padding: 10px; 
+                margin-bottom: 15px;
+                border-radius: 5px;
+                position: relative;
+            }
+            
+            .close-btn {
+                position: absolute;
+                top: 5px;
+                right: 10px;
+                cursor: pointer;
+            }
+        </style>
+        <div class="login-bg access-login"></div>
+        <div class="container login-area">
+            
+            
+                <div class="row ">
+                    <div class="section">                        
+                        {% if error_message %}
+                        <div class="error-messages alert alert-danger">
+                            <p>{{ error_message }}</p>
+                            <span class="close-btn" onclick="closeErrorMessage()">X</span>
+                        </div>
+                        {% endif %}
+                        {% if message %}
+                        <div class="error-messages alert alert-success">
+                            <p>{{ message }}</p>
+                            <span class="close-btn" onclick="closeErrorMessage()">X</span>
+                        </div>
+                        {% endif %}
+                    <form action='{% url 'EmployeeLogin' %}' method='POST'>
+                        {% csrf_token %}
+                        <div class="col s12 pad-0">
+                            <h5 class="bot-20 sec-tit center white-text">Login</h5>
+                            <div class="row">
+                                <div class="input-field col s10 offset-s1">
+                                    <input id="email3" type="text" class="validate" name='name'>
+                                    <label for="email3">User Name</label>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="input-field col s10 offset-s1">
+                                    <input id="pass3" type="password" class="validate" name='password'>
+                                    <label for="pass3">Password</label>
+                                </div>
+                            </div>
+
+                            <div class="row center">
+                                <button type='submit' class="waves-effect waves-light btn-large bg-primary">Login</button>
+                                <div class="spacer"></div>
+                                <div class="links">
+                                    <a href="{% url 'Forget_password' %}" class='waves-effect'>Forgot Password</a>
+                                    {% comment %} <span class="sep">|</span> {% endcomment %}
+                                    {% comment %} <a href="ui-pages-register.html" class='waves-effect'>Register</a> {% endcomment %}
+                                </div>
+                                <div class="spacer"></div>
+                                {% comment %} <div class="links">
+                                    <a href="sub-access.html" class='waves-effect'>Go Back</a>
+                                </div>  {% endcomment %}
+                                <div class="spacer"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- PWA Service Worker Code -->
+        <script type="text/javascript">
+            // This is the "Offline copy of pages" service worker
+            // Add this below content to your HTML page, or add the js file to your page at the very top to register service worker Check compatibility for the browser we're running this in
+            if ("serviceWorker" in navigator) {
+                if (navigator.serviceWorker.controller) {
+                    console.log("[PWA Builder] active service worker found, no need to register");
+                } else {
+                    // Register the service worker
+                    navigator.serviceWorker.register("pwabuilder-sw.js", { scope: "./" })
+                    .then(function (reg) {
+                        console.log("[PWA Builder] Service worker has been registered for scope: " + reg.scope);
+                    });
+                }
+            }
+        </script>
+        <script>
+            // Function to close the error message
+            function closeErrorMessage() {
+                var errorMessage = document.querySelector('.error-messages');
+                errorMessage.style.display = 'none';
+            }
+
+            // Automatically close the error message after 5 seconds
+            setTimeout(closeErrorMessage, 5000);
+        </script>
+
+        <!-- LOAD FILES AT PAGE END FOR FASTER LOADING -->
+
+        <!-- CORE JS FRAMEWORK - START --> 
+        <script src="{% static 'Form/js/jquery-2.2.4.min.js' %}"></script>
+        <script src="{% static 'Form/js/materialize.js' %}"></script>
+        <script src="{% static 'Form/plugins/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script> 
+        <!-- CORE JS FRAMEWORK - END --> 
+
+
+        <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - START --> 
+        <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - END --> 
+
+
+        <!-- CORE TEMPLATE JS - START --> 
+        <script src="{% static 'Form/js/init.js' %}"></script>
+        <script src="{% static 'Form/js/settings.js' %}"></script>
+
+        <script src="{% static 'Form/js/scripts.js' %}"></script>
+
+        <!-- END CORE TEMPLATE JS - END --> 
+
+
+        <script type="text/javascript">
+            document.addEventListener("DOMContentLoaded", function(){
+                $('.preloader-background').delay(10).fadeOut('slow');
+            });
+        </script>
+    </body>
+</html>

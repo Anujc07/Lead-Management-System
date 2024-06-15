@@ -1,0 +1,135 @@
+{% extends 'Admin/base.html' %} 
+{% block content%}
+
+<div class="tab-content">
+    <div>
+        <h5 class="mb-1">Set target to the employees</h5>           
+    </div>
+    <div style='margin-top:20px;'>
+        <form method='POST' action="{% url 'Target_assign' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="mb-3">
+                    <label class="form-label">Employees Name</label>
+                    <select name='employee' class="form-select" required>
+                        <option value=''>Select Employee...</option>
+                        {% for member in emp %}
+                            <option value="{{ member.id }}">{{ member.member_name }}</option>          
+                        {% endfor %}                  
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="mb-3">
+                    <label class="form-label">Target</label>
+                    <select name='target' class="form-select" required>
+                        <option>Select Target...</option>
+                        {% for targ in target %}
+                            <option value="{{ targ.id }}">{{ targ.name }}</option>          
+                        {% endfor %}                  
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="mb-3">
+                    <label class="form-label">Year</label>
+                    <select class="form-select" name='year'>
+                        <option value="{% now 'Y' %}">{% now 'Y' %}</option>          
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                <div class="mb-3">
+                    <label class="form-label">Month</label>
+                    <select id="month-select" class="form-select" name='month' required>
+                        {% for month_name in months %}
+                            <option value="{{ month_name }}">{{ month_name }}</option>
+                        {% endfor %}                            
+                    </select>
+                </div>
+            </div>
+                              
+            <div class="col-sm-3">
+                <div class="mb-3">
+                    <label class="form-label">Target</label>
+                    <input name='target_value' type="number" class="form-control" placeholder="Enter Target" value="" required>
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                <div class="mb-3 mt-4">
+                    <button type="submit" class="btn btn-primary" onclick="setTarget()">
+                        Submit
+                      </button>
+                </div>
+            </div>
+        </div>        
+
+        {% comment %} <div class="d-flex align-items-start gap-3 mt-3">
+            <button type="submit" class="btn btn-primary" onclick="setTarget()">
+              Submit
+            </button>
+        </div> {% endcomment %}
+    </form>
+    </div>
+    
+</div>
+
+<div class="card">      
+    <div class="card-body">
+        <div class="live-preview">
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle table-nowrap mb-0" style='margin-top:20px;'>
+                    <thead>
+                      <tr>
+                        <th colspan='8' class='text-center'></th>                    
+                      </tr>  
+                      <tr>
+                        <th>S.No.</th>
+                        <th>Name</th>
+                        <th>Month</th>
+                        <th class='text-center'>Bookings</th>     
+                        <th class='text-center'>Corp. Visits</th>   
+                        <th class='text-center'>Customer F/W</th>                
+                        <th class='text-center'>Home Visits</th>     
+                        <th class='text-center'>SM F/W</th> 
+                        <th class='text-center'>Site Visit</th> 
+                        <th class='text-center'>Admission</th> 
+                        <th class='text-center'>IP</th> 
+                      </tr> 
+                    </thead>
+                  
+                      
+                  <tbody>
+                    {% comment %} {{ target_data_list }} {% endcomment %}
+                    {% for i in target_data_list %}
+                    <tr>
+                      <td class='text-center'>{{ forloop.counter }}</td>
+                      <td class='text-center'>{{ i.member_name }}</td>
+                      <td class='text-center'>{{ i.target_data.0.month }}</td>
+                      <td class='text-center'>{% for tar in i.target_data %}{% if tar.Target_id is 1 %}{{ tar.target }}{% endif %}{% endfor %}</td>
+                      <td class='text-center'>{% for tar in i.target_data %}{% if tar.Target_id is 2 %}{{ tar.target }}{% endif %}{% endfor %}</td>
+                      <td class='text-center'>{% for tar in i.target_data %}{% if tar.Target_id is 3 %}{{ tar.target }}{% endif %}{% endfor %}</td>
+                      <td class='text-center'>{% for tar in i.target_data %}{% if tar.Target_id is 4 %}{{ tar.target }}{% endif %}{% endfor %}</td>
+                      <td class='text-center'>{% for tar in i.target_data %}{% if tar.Target_id is 5 %}{{ tar.target }}{% endif %}{% endfor %}</td>
+                      <td class='text-center'>{% for tar in i.target_data %}{% if tar.Target_id is 6 %}{{ tar.target }}{% endif %}{% endfor %}</td>
+                      <td class='text-center'>{% for tar in i.target_data %}{% if tar.Target_id is 6 %}{{ tar.target }}{% endif %}{% endfor %}</td>
+                      <td class='text-center'>{% for tar in i.target_data %}{% if tar.Target_id is 6 %}{{ tar.target }}{% endif %}{% endfor %}</td>
+                     
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

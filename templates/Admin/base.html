@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none">
+
+
+<head>
+    {%load static%}
+    <meta charset="utf-8" />
+    <title>Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta content="Themesbrand" name="author"/>
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+    <!-- Include the JavaScript file -->
+<script src="{% static 'assets/js/layout.js' %}"></script>
+
+<!-- Bootstrap Css -->
+<link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- Icons Css -->
+<link href="{% static 'assets/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- App Css-->
+<link href="{% static 'assets/css/app.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- custom Css-->
+<link href="{% static 'assets/css/custom.min.css' %}" rel="stylesheet" type="text/css" />
+<style>
+   #overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7); /* Dark semi-transparent background */
+        backdrop-filter: blur(10px); 
+        display: none;
+        z-index: 9998;
+    }
+    #overlay .spinner {
+        position: absolute;
+        top: 40%;
+        left: 40%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 2rem;
+    } 
+
+    .loader {
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        display: inline-block;
+        position: relative;
+        border: 3px solid;
+        border-color: #FFF #FFF transparent transparent;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+      }
+      .loader::after,
+      .loader::before {
+        content: '';  
+        box-sizing: border-box;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        border: 3px solid;
+        border-color: transparent transparent #FF3D00 #FF3D00;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        box-sizing: border-box;
+        animation: rotationBack 0.5s linear infinite;
+        transform-origin: center center;
+      }
+      .loader::before {
+        width: 80px;
+        height: 80px;
+        border-color: #FFF #FFF transparent transparent;
+        animation: rotation 1.5s linear infinite;
+      }
+          
+      @keyframes rotation {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      } 
+      @keyframes rotationBack {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(-360deg);
+        }
+      }
+              
+</style>
+
+<style>
+    @import url(https://fonts.googleapis.com/css?family=Roboto:100);
+    
+    
+    
+    #loading {
+        margin-top:100px;
+        margin-left:auto;
+        margin-right:auto;
+      display: None;
+      width: 80px;
+      height: 80px;
+      border: 3px solid #4b38b3;
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      -webkit-animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { -webkit-transform: rotate(360deg); }
+    }
+    @-webkit-keyframes spin {
+      to { -webkit-transform: rotate(360deg); }
+    }
+
+</style>
+</head>
+
+<body>
+
+    <!-- Begin page -->
+<div id="layout-wrapper">
+        <header id="page-topbar">
+            <div class="layout-width">
+                <div class="navbar-header">
+                    <div class="d-flex">
+                        <!-- LOGO -->
+                        <div class="navbar-brand-box horizontal-logo">
+                            <a href="index-2.html" class="logo logo-dark">
+                                <span class="logo-sm">
+                                    <img src="http://182.70.253.15:8000/static/assets/images/users/l1.png" alt="" height="22">
+                                </span>
+                                <span class="logo-lg">
+                                    <img src="http://182.70.253.15:8000/static/assets/images/users/l1.png" alt="" height="17">
+                                </span>
+                            </a>
+
+                            <a href="index-2.html" class="logo logo-light">
+                                <span class="logo-sm">
+                                    <img src="http://182.70.253.15:8000/static/assets/images/users/l1.png" alt="" height="22">
+                                </span>
+                                <span class="logo-lg">
+                                    <img src="http://182.70.253.15:8000/static/assets/images/users/l1.png" alt="" height="17">
+                                </span>
+                            </a>
+                        </div>
+                        <button type="button" class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger shadow-none" id="topnav-hamburger-icon">
+                            <span class="hamburger-icon">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </span>
+                        </button>
+                        <!-- App Search-->
+                    </div>
+
+                    <div class="d-flex align-items-center">
+                                                                 
+
+                       
+                        <div class="dropdown ms-sm-3 header-item topbar-user">
+                            <button type="button" class="btn shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="d-flex align-items-center">
+                                    <img class="rounded-circle header-profile-user" src="{% static 'assets/images/users/l1.png' %}" alt="Header Avatar">
+                                    <span class="text-start ms-xl-2">
+                                        <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ request.session.username }}</span>
+                                        <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">Sage Group</span>
+                                    </span>
+                                </span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <!-- item-->
+                                <h6 class="dropdown-header">Welcome {{request.session.team_name}}</h6>
+                                <a href="{% url 'UserLogout' %}" class="dropdown-item" ><i class="mdi mdi-delete text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Logout</span></a>
+                               
+                                <div class="dropdown-divider"></div>
+                                {% comment %} <a class="dropdown-item" ><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>$5971.67</b></span></a> {% endcomment %}
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+<div class="app-menu navbar-menu">
+    <!-- LOGO -->
+    <div class="navbar-brand-box">
+        <!-- Dark Logo-->
+        <a  class="logo logo-dark">
+            <span class="logo-sm">
+                <img src="{% static 'assets/images/users/acc logo2.jpeg' %}" alt="" height="22">
+            </span>
+            <span class="logo-lg">
+                <img src="{% static 'assets/images/users/acc logo2.jpeg' %}" alt="" height="17">
+            </span>
+        </a>
+        <!-- Light Logo-->
+        <a class="logo logo-light">
+            <span class="logo-sm">
+                <img src="{% static 'assets/images/users/acc logo2.jpeg' %}" alt="" height="22">
+            </span>
+            <span class="logo-lg">
+                <img src="{% static 'assets/images/users/acc logo2.jpeg' %}" alt="" height="40">
+            </span>
+        </a>
+        <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
+            <i class="ri-record-circle-line"></i>
+        </button>
+    </div>
+
+    <div id="scrollbar">
+        <div class="container-fluid">
+
+            <div id="two-column-menu">
+            </div>
+            <ul class="navbar-nav" id="navbar-nav">
+                {% comment %} <li class="menu-title"><span data-key="t-menu">Menu</span></li> {% endcomment %}
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{% url 'Dashboard' %}">
+                        <i class="mdi mdi-atlassian"></i> <span>Dashboards</span>
+                    </a>
+                    <a class="nav-link menu-link" href="{% url 'Target_assign' %}">
+                        <i class="mdi mdi-target"></i> <span>Target Assign</span>
+                    </a>
+                    
+                    <a class="nav-link menu-link" href="{% url 'LeadFunnel' %}">
+                        <i class="mdi mdi-cup-water"></i> <span>Lead Funnel</span>
+                    </a>
+                    <a class="nav-link menu-link" href="{% url 'DailyPerReport' %}">
+                        <i class="mdi mdi-speedometer"></i> <span> Daily Performance Report</span>
+                    </a>
+                    {% comment %} <a class="nav-link menu-link">
+                        <i class="mdi mdi-cup-water"></i> <span data-bs-toggle="modal" data-bs-target="#upload2">F/W Data Upload</span>
+                    </a>
+                    <a class="nav-link menu-link">
+                        <i class="mdi mdi-google-analytics" ></i> <span  data-bs-toggle="modal" data-bs-target="#upload">Analysis Data Upload</span>                        
+                    </a> {% endcomment %}
+                    
+                </li> <!-- end Dashboard Menu -->
+                {% comment %} <li class="menu-title"><span data-key="t-menu">Action</span></li> {% endcomment %}
+                {% comment %} <li class="nav-item">
+                    
+                    <a class="nav-link menu-link" href="#uploadbtn" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
+                        <i class="mdi mdi-archive-arrow-up"></i> <span data-key="t-dashboards">Upload New Data</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="uploadbtn">
+                        <ul class="nav nav-sm flex-column" style='padding:30px;'>
+                            <li class="nav-item" style='margin-bottom:10px;'>
+                             
+                                <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#upload">Analysis Data</button>
+                                               
+                            </li>
+                        
+                            <li class="nav-item" style='margin-bottom:10px;'>
+                                <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#upload2">F/W Data</button>
+                                               
+                            </li>
+                        </ul>
+                    </div>
+                </li> {% endcomment %}
+                {% if request.session.teamIDs %}
+                            
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="#dataupload" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
+                            <i class="mdi mdi-database-arrow-up"></i> <span data-key="t-dashboards">Data Upload</span>
+                        </a>
+                        <div class="collapse menu-dropdown" id="dataupload">
+                            <ul class="nav nav-sm flex-column" >
+                                <li class="nav-item" data-bs-toggle="modal" data-bs-target="#upload2">
+                                    <a class="nav-link menu-link">
+                                        <span >Pending and Done F/W Data</span>
+                                    </a>                                             
+                                </li>
+                                <li class="nav-item" data-bs-toggle="modal" data-bs-target="#upload">
+                                    <a class="nav-link menu-link" >
+                                        <span  >Enquiry Analysis Data</span>
+                                    </a>                                             
+                                </li>
+                                
+                            
+                            </ul>
+                        </div>
+                    </li>  
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#report" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
+                        <i class="mdi mdi-file-document"></i> <span data-key="t-dashboards">Reports</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="report">
+                        <ul class="nav nav-sm flex-column" >
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{% url 'RPT_team_per' %}">
+                                   <span>Team Performance</span>
+                                </a>                                             
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{% url 'RPT_funnel' %}">
+                                   <span>Current State Funnel</span>
+                                </a>                                             
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{% url 'RPT_sm_corp' %}">
+                                   <span>Sage Mitra F/W</span>
+                                </a>                                             
+                            </li>
+                           
+                        </ul>
+                    </div>
+                </li>               
+
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+
+    <div class="sidebar-background"></div>
+</div>
+
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">            
+            <div class="col-xxl-6">
+                <div class="live-preview">
+                    <div id="upload" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                        <div class="modal-dialog">
+                            <form id="upload-form" method="post" enctype="multipart/form-data" action="{% url 'UpdateData' %}">
+                                {% csrf_token %}
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="myModalLabel">Select Your Enquiry Analysis Data File</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h5 class="fs-15">
+                                            Select Valid File
+                                        </h5>
+                                        <div>
+                                            <input id="excel-file-input" class="form-control" type="file" name="excel_file">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                        <button id="upload-btn" type="submit" class="btn btn-primary" disabled>Upload</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Repeat for other modals if needed -->
+            <div class="col-xxl-6">
+                <div class="live-preview">
+                    <div id="upload2" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                        <div class="modal-dialog">
+                            <form id="upload2-form" method="post" enctype="multipart/form-data" action="{% url 'FollowUploadData' %}">
+                                {% csrf_token %}
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="myModalLabel">Select FollowUp Data File</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h5 class="fs-15">
+                                            Select Valid File
+                                        </h5>
+                                        <div>
+                                            <input id="excel2-file-input" class="form-control" type="file" name="excel_file2">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                        <button id="upload2-btn" type="submit" class="btn btn-primary" disabled>Upload</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+
+{% block content %}
+        
+{% endblock %}
+        </div>
+    </div>  
+    {% comment %} <span class="loader"></span> {% endcomment %}
+</div>
+<div id="overlay">
+    <span class="loader spinner"></span>
+    
+</div>
+
+<div id="loading">    
+   
+</div>
+<script>
+    function loader(){
+        overlay = document.getElementById('loading');
+        overlay.style.display = 'block';
+    }
+    function loaderClose(){
+        overlay = document.getElementById('loading');
+        overlay.style.display = 'None';
+    }
+
+    document.getElementById('excel-file-input').addEventListener('change', function() {
+        var fileInput = document.getElementById('excel-file-input');
+        var uploadBtn = document.getElementById('upload-btn');
+        if (fileInput.files.length > 0) {
+            uploadBtn.disabled = false;
+        } else {
+            uploadBtn.disabled = true;
+        }
+    });
+
+    document.getElementById('upload-form').addEventListener('submit', function() {
+        var overlay = document.getElementById('overlay');
+        overlay.style.display = 'block';
+    });
+
+    document.getElementById('excel2-file-input').addEventListener('change', function() {
+        var fileInput = document.getElementById('excel2-file-input');
+        var uploadBtn = document.getElementById('upload2-btn');
+        if (fileInput.files.length > 0) {
+            uploadBtn.disabled = false;
+        } else {
+            uploadBtn.disabled = true;
+        }
+    });
+
+    document.getElementById('upload2-form').addEventListener('submit', function() {
+        var overlay = document.getElementById('overlay');
+        overlay.style.display = 'block';
+    });
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<!-- Include the JavaScript files -->
+<script src="{% static 'assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'assets/libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'assets/libs/node-waves/waves.min.js' %}"></script>
+<script src="{% static 'assets/libs/feather-icons/feather.min.js' %}"></script>
+<script src="{% static 'assets/js/pages/plugins/lord-icon-2.1.0.js' %}"></script>
+<script src="{% static 'assets/js/plugins.js' %}"></script>
+
+<!-- prismjs plugin -->
+<script src="{% static 'assets/libs/prismjs/prism.js' %}"></script>
+
+<!-- App js -->
+<script src="{% static 'assets/js/app.js' %}"></script>
+
+</body>
+
+
+</html>

@@ -1,0 +1,337 @@
+{% extends 'app/base.html' %}
+{% block content %}
+        <!-- CORE CSS TEMPLATE - END -->
+        <style>
+            input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        
+        
+        input[type=number] {
+          -moz-appearance: textfield;
+        }
+        </style>
+
+    
+        <div class="container">
+            <div class="sect">
+               <h5 class="pagetitle">Corporate Visit</h5>
+               <p>Feed Your Corporate Visit Details.<br> Fill all the Details.</p>
+               <p></p>
+               <div class="divider"></div>
+            </div>
+        </div>  
+        
+        
+        <!-- Form Section Starts -->
+        <div class="container">
+            <div class="section">
+                <form action='{% url 'EmployeeCorpoVisit' %}'  method='POST' enctype="multipart/form-data" id="corporateVisitForm">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="mdi mdi-account prefix"></i>
+                            <input id="event_title11" type="text" name='name' required value="{{ request.session.first_name }}" disabled>
+                            <label for="event_title11"><span style='color:red; font-size:18px;'>*</span></label>
+                        </div>
+                    </div>                    
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="mdi mdi-calendar prefix"></i>
+                            <input type="date" id="datepicker-input" class="datepicker datepicker" name="date" onfocus=(this.type='date') onblur=(this.type='text')>
+                            <label for="datepicker-input">Date <span style="color:red; font-size:18px;">*</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label>Select Corporate Type</label>
+                        <div class="input-field col s12">                   
+                            <select name='corp_type'>
+                              <option>Select Corporate Type </option>
+                              {% for i in corporate_type %}
+                              <option value='{{ i }}'> {{ i }} </option>
+                              {% endfor %}
+                             
+                            </select>                       
+                        </div>                
+                    </div>
+                    <div class="row">
+                        <label>Select Corporate </label>
+                        <div class="input-field col s12">  
+                            <input list="data-list" id="datalist" name="corp_name" />                 
+                            <datalist id='data-list'>
+                              
+                              {% for i in corporate_list %}
+                              <option value='{{ i }}'></option>
+                              {% endfor %}
+                              <option>Other</option>
+                            </datalist>                       
+                        </div>                
+                    </div>
+                    
+
+                    {% comment %} <div class="row">
+                        <div class="input-field col s12">
+                            <i class="mdi mdi-office-building prefix"></i>
+                            <input type="text" id="datepicker-input62" class="datepicker datepicker62" name='corp_name' required>
+                            <label for="datepicker-input62">Enter Corporate Name <span style='color:red; font-size:18px;'>*</span></label>
+                        </div>
+                    </div>  {% endcomment %}
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="mdi mdi-account prefix"></i>
+                            <input type="text" id="datepicker-input82" class="datepicker datepicker82" name='key_person' required>
+                            <label for="datepicker-input82">Key Person<span style='color:red; font-size:18px;'>*</span></label>                            
+                        </div>
+                        <button style='float: inline-end;' class='btn-small' id="keypersonButton">+</button>
+                    </div> 
+                    
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="mdi mdi-cellphone-basic prefix"></i>
+                            <input type="text" id="datepicker-input800" class="datepicker datepicker800" name='key_person_contact' required pattern="[6-9]{1}[0-9]{9}" title="Contact number should be 10 digits long and start with 6, 7, 8, or 9">
+                            <label for="datepicker-input800">Contact Number of Key Person<span style='color:red; font-size:18px;'>*</span></label>
+                        </div>
+                    </div>
+                
+                    <div class="row" id="keyperson" style="display: none;">
+                        <div class="input-field col s12">
+                            <i class="mdi mdi-account prefix"></i>
+                            <input type="text" id="datepicker-input83" class="datepicker datepicker83" name='key_person2'>
+                            <label for="datepicker-input83">Key Person Second<span style='color:red; font-size:18px;'>*</span></label>
+                        </div>
+                        <div class="input-field col s12">
+                            <i class="mdi mdi-cellphone-basic prefix"></i>
+                            <input type="text" id="datepicker-input8001" class="datepicker datepicker8001" name='key_person_contact2' pattern="[6-9]{1}[0-9]{9}" title="Contact number should be 10 digits long and start with 6, 7, 8, or 9">
+                            <label for="datepicker-input8001">Contact Number of Second Key Person<span style='color:red; font-size:18px;'>*</span></label>
+                        </div>
+                    </div> 
+                
+                    <script>
+                        document.getElementById('keypersonButton').addEventListener('click', function() {
+                            var keypersonDiv = document.getElementById('keyperson');
+                            if (keypersonDiv.style.display === 'none' || keypersonDiv.style.display === '') {
+                                keypersonDiv.style.display = 'block';
+                            } else {
+                                keypersonDiv.style.display = 'none';
+                            }
+                        });
+                    </script>
+                
+                    
+                    
+                                    
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="mdi mdi-account-multiple-outline prefix"></i>
+                            <input type="number" id="datepicker-input003" class="datepicker datepicker003" name='meet_person' required min="0">
+                            <label for="datepicker-input003">No. of People Met <span style='color:red; font-size:18px;'>*</span></label>
+                        </div>
+                    </div>                    
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="mdi mdi-account-multiple-outline prefix"></i>
+                            <input type="number" id="datepicker-input004" class="datepicker datepicker004" name='data_collect' required>
+                            <label for="datepicker-input004">Data Collected <span style='color:red; font-size:18px;'>*</span></label>
+                        </div>
+                    </div>                    
+                    <div class="row">
+                        <div class="col s12 pad-0">
+                            <h5 class="bot-18 sec-tit" style="font-size: 16px;">Presentation</h5>
+                            <p>
+                                <label>
+                                    <input type="radio" name="presentation" value="done" class="with-gap" onclick="showFields()" />
+                                    <span>Done</span>
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <input type="radio" name="presentation" value="planned" class="with-gap" onclick="showFields()" />
+                                    <span>Planned</span>
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <input type="radio" name="presentation" value="not_done" class="with-gap" onclick="showFields()" />
+                                    <span>Not Planned</span>
+                                </label>
+                            </p>
+                            
+                        </div>
+                    </div>
+
+                   
+                    
+                    <div class="row" id="corpNameInput" style="display: none;">
+                        <div class="input-field col s12">
+                            <i class="mdi mdi-office-building prefix"></i>
+                            <input type="text" id="datepicker-input52" class="datepicker datepicker52" name='reason'>
+                            <label for="datepicker-input52">Reason<span style='color:red; font-size:18px;'>*</span></label>
+                        </div>
+                    </div>
+                    
+                    <div class="row" id="dateInput" style="display: none;">
+                        <div class="input-field col s12">
+                            <i class="mdi mdi-calendar prefix"></i>
+                            <input type="date" id="datepicker-input56" class="datepicker datepicker56" name="nxt_date">
+                            <label for="datepicker-input56">Enter the Planned Date of Presentation <span style="color:red; font-size:18px;">*</span></label>
+                        </div>
+                    </div>
+                    
+                    <script>
+                        function showFields() {
+                            var presentation = document.querySelector('input[name="presentation"]:checked').value;
+                            if (presentation === 'not_done') {
+                                document.getElementById('corpNameInput').style.display = 'block';
+                                document.getElementById('dateInput').style.display = 'none';
+                            } else if (presentation === 'planned') {
+                                document.getElementById('corpNameInput').style.display = 'none';
+                                document.getElementById('dateInput').style.display = 'block';
+                            } else {
+                                document.getElementById('corpNameInput').style.display = 'none';
+                                document.getElementById('dateInput').style.display = 'none';
+                            }
+                        }
+                    </script>
+                    
+                    <div class="row">
+                        <div class="col s12">
+                            {% comment %} <input type="file" id="datepicker-input582" class="datepicker datepicker582 col s6" name="image" accept="image/*" capture="environment"> {% endcomment %}
+                            <label for="datepicker-input582" class="col s12">Upload Corporate Image<span style="color:red; font-size:18px;">*</span></label>
+                        </div>
+                        <div class="input-field col s12">
+                            <input type="file" id="datepicker-input582" class="datepicker datepicker582 col s12" name="image" accept="image/*" capture="environment" required>
+                            {% comment %} <label for="datepicker-input582" class="col s6">Upload Corporate Image<span style="color:red; font-size:18px;">*</span></label> {% endcomment %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 pad-0">
+                            <h5 class="bot-18 sec-tit" style="font-size: 16px;">Visit Type</h5>
+                            <p>
+                                <label>
+                                    <input type="radio" name="visit_type" value="solo" class="with-gap" />
+                                    <span>Solo Visit</span>
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <input type="radio" name="visit_type" value="team" class="with-gap" />
+                                    <span>Team Visit</span>
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row" id="coFellowSection" style="display: none;">
+                        <div class="input-field col s11">
+                            <select name='co_name_0'>
+                                <option value=''>Select Co-Fellow</option>
+                                {% for i in member %}
+                                <option value='{{ i }}'>{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="row" id="coFellowInputContainer">
+                            <button style="float: inline-end; margin-top: 27px;" class="btn-small" id="addCoFellowBtn" type="button">+</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Hidden template for the Co-Fellow dropdown -->
+                    <div id="coFellowTemplate" style="display: none;">
+                        <div class="input-field col s11 co-fellow-entry">
+                            <select name="co_name_1">
+                                <option value="">Select Co-Fellow</option>
+                                {% for i in member %}
+                                <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button class="close-btn" style="float: inline-end; margin-top: 27px;"><i class="mdi mdi-close"></i></button>
+                    </div>
+                    
+                    
+                    <div class="row">
+                        <div class="col s12">
+                            <button type='submit' id='submitBtn' class="waves-effect waves-light btn-large bg-primary ">Save</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12">&nbsp;</div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- Form Section Ends -->
+
+       
+
+        
+<script>
+var today = new Date().toISOString().slice(0, 10);
+document.getElementById('datepicker-input').value = today;
+
+document.addEventListener('DOMContentLoaded', function() {
+    var coFellowCount = 1;
+
+    document.querySelectorAll('input[name="visit_type"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            if (this.value === 'team') {
+                document.getElementById('coFellowSection').style.display = 'block';
+            } else {
+                document.getElementById('coFellowSection').style.display = 'none';
+                // Optionally, you can remove all added Co-Fellow inputs when switching to solo
+                var container = document.getElementById('coFellowInputContainer');
+                while (container.firstChild) {
+                    container.removeChild(container.firstChild);
+                }
+                // Reset the add button
+                var addButton = document.createElement('button');
+                addButton.style = 'float: inline-end; margin-top: 27px;';
+                addButton.className = 'btn-small';
+                addButton.id = 'addCoFellowBtn';
+                addButton.type = 'button';
+                addButton.innerText = '+';
+                container.appendChild(addButton);
+                // Reset coFellowCount
+                coFellowCount = 1;
+                addButton.addEventListener('click', addCoFellow);
+            }
+        });
+    });
+
+    document.getElementById('addCoFellowBtn').addEventListener('click', addCoFellow);
+
+    function addCoFellow(event) {
+        event.preventDefault();
+
+        // Clone the template
+        var template = document.getElementById('coFellowTemplate').cloneNode(true);
+        template.style.display = 'block';
+        template.id = ''; // Remove the id to avoid duplicates
+
+        coFellowCount++;
+        var selectElement = template.querySelector('select');
+        selectElement.name = 'co_name_' + coFellowCount;
+
+        // Append the cloned template to the container
+        var container = document.getElementById('coFellowInputContainer');
+        container.appendChild(template);
+
+        // Add event listener to the close button
+        var closeButton = template.querySelector('.close-btn');
+        closeButton.addEventListener('click', function() {
+            container.removeChild(template);
+        });
+    }
+});
+
+
+document.getElementById('corporateVisitForm').addEventListener('submit', function(event) {
+    var submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+
+    
+
+});
+</script>
+{% endblock %}

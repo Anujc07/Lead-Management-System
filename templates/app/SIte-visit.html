@@ -1,0 +1,271 @@
+{% extends 'app/base.html' %}
+{% block content %}
+<!-- CORE CSS TEMPLATE - END -->
+<style>
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+</style>
+
+
+
+
+
+<div class="container">
+  <div class="sect">
+     <h5 class="pagetitle">Home Visit Form</h5>
+     <p>Feed Your Home Visit Details.</p>
+     <div class="divider"></div>
+  </div>
+</div> 
+
+
+<!-- Form Section Starts -->
+<div class="container">
+  <div class="section">
+      <form action='{% url 'Home_visit' %}' method='POST' enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="row">
+              <div class="input-field col s12">                 
+                  <input id="event_title11" type="text" name='name' required value="{{ request.session.first_name }}" disabled>
+                  <label for="event_title11">Your Name</label>
+              </div>
+          </div>  
+          <div class="row">
+              <div class="input-field col s12">
+                  {% comment %} <i class="mdi mdi-account prefix"></i> {% endcomment %}
+                  <input id="event_title11" type="text" name='customer_name' required>
+                  <label for="event_title11">Customer Name<span style="color:red; font-size:18px;">*</span></label>
+              </div>
+          </div>
+
+          <div class="row">
+            <div class="input-field col s12">
+                {% comment %} <i class="mdi mdi-cellphone-basic prefix"></i> {% endcomment %}
+                {% comment %} <input type="text" id="datepicker-input800" class="datepicker datepicker800" name='sm_contact' required pattern="[6-9]{1}[0-9]{9}"> {% endcomment %}
+                <input type="text" id="datepicker-input800" class="datepicker datepicker800" name='customer_contact' required pattern="[6-9]{1}[0-9]{9}" title="Contact number should be 10 digits long and start with 6, 7, 8, or 9">
+                <label for="datepicker-input800">Contact Number of Customer <span style='color:red; font-size:18px;'>*</span></label>
+            </div>
+          </div>  
+
+
+          
+          <div class="row">
+              <div class="input-field col s12">
+                  {% comment %} <i class="mdi mdi-calendar prefix"></i> {% endcomment %}
+                  <input type="date" id="date" class="datepicker datepicker" name="date" onfocus="(this.type='date')" onblur="(this.type='text')" required>
+                  <label for="start-date">Visit Date <span style="color:red; font-size:18px;">*</span></label>
+              </div>
+          </div>
+       
+          <div class="row">                        
+              <div class="input-field col s12">
+                  <textarea id="textarea2" name='visit_details' class="materialize-textarea" data-length="1200" required></textarea>
+                  <label for="textarea2">Remark</label>
+                </div>
+          </div>
+          <div class="row">
+              <div class="input-field col s12">
+                  {% comment %} <i class="mdi mdi-account-star prefix"></i> {% endcomment %}
+                  <input type="text" id="datepicker-input3" class="datepicker datepicker3" name='site_visit_name' required>
+                  <label for="datepicker-input3">Site Visit Name</label>
+              </div>
+          </div>
+           
+          <div class="row">
+                <div class="col s12">
+                    {% comment %} <input type="file" id="datepicker-input582" class="datepicker datepicker582 col s6" name="image" accept="image/*" capture="environment"> {% endcomment %}
+                    <label for="datepicker-input582" class="col s12">Upload Home Image<span style="color:red; font-size:18px;">*</span></label>
+                </div>
+                <div class="input-field col s12">
+                    <input type="file" id="datepicker-input582" class="datepicker datepicker582 col s12" name="image" accept="image/*" capture="environment" required>
+                    {% comment %} <label for="datepicker-input582" class="col s6">Upload Corporate Image<span style="color:red; font-size:18px;">*</span></label> {% endcomment %}
+                </div>          
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <h5 class="bot-18 sec-tit" style="font-size: 16px;">Visit Type</h5>
+                    <p>
+                        <label>
+                            <input type="radio" name="visit_type" value="solo" class="with-gap" />
+                            <span>Solo Visit</span>
+                        </label>
+                    </p>
+                    <p>
+                        <label>
+                            <input type="radio" name="visit_type" value="team" class="with-gap" />
+                            <span>Team Visit</span>
+                        </label>
+                    </p>
+                </div>
+            </div>
+            <div class="row" id="coFellowSection" style="display: none;">
+                <div class="input-field col s11">
+                    <select name='co_name_0'>
+                        <option value=''>Select Co-Fellow</option>
+                        {% for i in member %}
+                        <option value='{{ i }}'>{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="row" id="coFellowInputContainer">
+                    <button style="float: inline-end; margin-top: 27px;" class="btn-small" id="addCoFellowBtn" type="button">+</button>
+                </div>
+            </div>
+            <div id="coFellowTemplate" style="display: none;">
+                <div class="input-field col s11 co-fellow-entry">
+                    <select name="co_name_1">
+                        <option value="">Select Co-Fellow</option>
+                        {% for i in member %}
+                        <option value="{{ i }}">{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button class="close-btn" style="float: inline-end; margin-top: 27px;">
+                    <i class="mdi mdi-close"></i>
+                </button>
+            </div>
+            
+
+          <div class="row">
+              <div class="col s12">
+                  <button type='submit' class="waves-effect waves-light btn-large bg-primary">Save</button>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col s12">&nbsp;</div>
+          </div>
+      </form>
+  </div>        
+</div>
+<br>
+<br>
+
+<!-- Form Section Ends -->
+
+<!-- Bottom App Sticky Menu -->
+
+<!-- Modal HTML -->
+
+
+
+<script>
+// Get today's date in the format YYYY-MM-DD
+document.addEventListener('DOMContentLoaded', function() {
+var today = new Date().toISOString().slice(0, 10);
+document.getElementById('date').value = today;
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    var coFellowCount = 1;
+
+    // Add event listeners to visit type radio buttons
+    document.querySelectorAll('input[name="visit_type"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            if (this.value === 'team') {
+                document.getElementById('coFellowSection').style.display = 'block';
+            } else {
+                document.getElementById('coFellowSection').style.display = 'none';
+                // Optionally, clear any added Co-Fellow inputs
+                var container = document.getElementById('coFellowInputContainer');
+                container.innerHTML = '';
+                // Reset add button
+                var addButton = document.createElement('button');
+                addButton.style = 'float: inline-end; margin-top: 27px;';
+                addButton.className = 'btn-small';
+                addButton.id = 'addCoFellowBtn';
+                addButton.type = 'button';
+                addButton.innerText = '+';
+                container.appendChild(addButton);
+                // Reset coFellowCount
+                coFellowCount = 1;
+                addButton.addEventListener('click', addCoFellow);
+            }
+        });
+    });
+
+    // Add Co-Fellow input dynamically
+    function addCoFellow(event) {
+        event.preventDefault();
+
+        // Clone the template
+        var template = document.getElementById('coFellowTemplate').cloneNode(true);
+        template.style.display = 'block';
+        template.id = ''; // Remove the id to avoid duplicates
+
+        coFellowCount++;
+        var selectElement = template.querySelector('select');
+        selectElement.name = 'co_name_' + coFellowCount;
+
+        // Append the cloned template to the container
+        var container = document.getElementById('coFellowInputContainer');
+        container.appendChild(template);
+
+        // Add event listener to the close button
+        var closeButton = template.querySelector('.close-btn');
+        closeButton.addEventListener('click', function() {
+            container.removeChild(template);
+        });
+    }
+
+    // Attach the event listener to the add button initially
+    document.getElementById('addCoFellowBtn').addEventListener('click', addCoFellow);
+});
+
+{% comment %} document.addEventListener('DOMContentLoaded', function() {
+    var coFellowCount = 2;
+
+    document.getElementById('addCoFellowBtn').addEventListener('click', function(event) {
+        event.preventDefault();
+
+        // Clone the template
+        var template = document.getElementById('coFellowTemplate').cloneNode(true);
+        template.style.display = 'block';
+        template.id = ''; // Remove the id to avoid duplicates
+
+        coFellowCount++;
+        var selectElement = template.querySelector('select');
+        selectElement.name = 'co_name_' + coFellowCount;
+
+        // Append the cloned template to the container
+        var container = document.getElementById('coFellowInputContainer');
+        container.appendChild(template);
+
+        // Add event listener to the close button
+        var closeButton = template.querySelector('.close-btn');
+        closeButton.addEventListener('click', function() {
+            container.removeChild(template);
+        });
+    });
+
+    // Show the initial container
+    document.getElementById('coFellowInputContainer').style.display = 'block';
+}); {% endcomment %}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "app/base.html" %}
+{% block content %}
+<style>
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+</style>
+<div class="container">
+    <div class="sect">
+       <h5 class="pagetitle">IP Patient</h5>
+       <p>Feed Your IP Patient Details.</p>
+       
+
+      
+    </div>
+</div> 
+
+<!-- Form Section Starts -->
+<div class="container">
+    <div class="section">
+        <form action='{% url 'IP' %}' method='POST'>
+            {% csrf_token %}
+            <div class="row">
+                <div class="input-field col s12">                    
+                    <input id="event_title11" type="text" name='name' disabled>
+                    <label for="event_title11">{{ request.session.first_name }}</label>
+                </div>
+            </div>          
+            <div class="row">
+                <div class="input-field col s12">                  
+                    <input type="date" id="datepicker-input" class="datepicker datepicker" name="date" onfocus=(this.type='date') onblur=(this.type='text')>
+                    <label for="datepicker-input">Date <span style="color:red; font-size:18px;">*</span></label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">                  
+                    <label for="datepicker-input2">Enter Patient Name</label>  
+                    <input type="text" name='p_name' class='datepicker datepicker2'  required>
+                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">                   
+                    <label for="datepicker-input3">Enter Key Person Name</label>
+                    <input type="text" id="datepicker-input3" class="datepicker datepicker3" name='key_person' required>
+                    
+                </div>
+            </div>
+            
+            
+            <div class="row">
+                <div class="col s12">
+                    <button type='submit' class="waves-effect waves-light btn-large bg-primary">Save</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">&nbsp;</div>
+            </div>
+        </form>
+    </div>        
+</div>
+<br>
+<br>
+<script>
+    var today = new Date().toISOString().slice(0, 10);
+    document.getElementById('datepicker-input').value = today;
+</script>
+
+{% endblock %}

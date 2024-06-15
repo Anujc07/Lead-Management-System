@@ -1,0 +1,481 @@
+{% extends 'Admin/base.html' %}
+{% block content %}
+
+<style>
+    .sticky {
+        position: fixed;
+        top: 9;
+        width: 80%;
+        z-index:9999;
+      }
+      
+    .remark-cell {
+        white-space: normal !important;
+        max-height: 3.6em;
+        line-height: 1.2em; 
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+</style>
+
+<div class="row" id='navbar' >
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0">highrise Data - {{ name }}	&#40; {{ team.0.T_name }} &#41;</h4>
+            {% if start_date != None %}
+                <a class=" waves-effect waves-light">{{ start_date }} to {{ end_date }}</a>
+            {% endif %}
+            <div class='col-3'>
+                
+                <select class="form-select form-select-lg"  onchange="window.location.href = this.value;">
+                    {% if view == 'Home-Visit' %}
+                        <option selected>Home Visits</option>
+                    {% elif view == '1Site-Visits' %}
+                        <option selected>1<sup>st</sup> Site Visits</option>
+                    {% elif view == '2Site-Visits' %}
+                        <option selected>2<sup>nd</sup> Site Visits</option>
+                    {% elif view == 'SM-Leads' %}
+                        <option selected> SM Leads</option>
+                    {% elif view == 'Hot-Leads' %}
+                        <option selected> Hot Leads</option>
+                    {% elif view == 'Missed-FW' %}
+                        <option selected> Missed F/W</option>
+                    {% elif view == 'SM-FW' %}
+                        <option selected> SM F/W</option>
+                    {% elif view == 'Corp-visits' %}
+                        <option selected> Corpo Visits</option>                    
+                    {% elif view == 'Leads' %}
+                        <option selected> FW Lead</option>
+                    {% else %}
+                        <option selected>{{ view }}</option>
+                    {% endif %}
+
+
+
+                    {% if total_leads != 0 %}
+                        <option value="?view=Leads{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">FW Leads {{ total_leads }}</option>
+                    {% endif %}
+    
+                    {%  if total_bookings != 0  %}
+                        <option value="?view=Bookings{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">Bookings {{ total_bookings }}</option>
+                    {% endif %}
+
+                    {%  if total_home_visits != 0  %}                    
+                        <option value="?view=Home-Visit{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">Home Visits {{ total_home_visits }}</option>
+                    {% endif %}
+
+                    {%  if total_1_site_visits != 0  %}    
+                        <option value="?view=1Site-Visits{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">1<sup>st</sup> Site Visits {{ total_1_site_visits }}</option>
+                    {% endif %}
+
+                    {%  if total_2_site_visits != 0  %}   
+                       <option value="?view=2Site-Visits{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">2<sup>nd</sup> Site Visits  {{ total_2_site_visits }}</option>
+                    {% endif %}
+
+                    {%  if total_sm_leads != 0  %}   
+                        <option value="?view=SM-Leads{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">SM Leads {{ total_sm_leads }}</option>
+                    {% endif %}       
+                    
+                    {%  if hot_leads != 0  %}   
+                        <option value="?view=Hot-Leads{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">Hot Leads {{ hot_leads }}</option>
+                    {% endif %}
+
+                    {%  if missed_fw != 0  %}   
+                        <option value="?view=Missed-FW{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">Missed F/W {{ missed_fw }}</option>
+                    {% endif %}
+
+                    {%  if SM_FW != 0  %}   
+                        <option value="?view=SM-FW{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">SM F/W {{ SM_FW }}</option>
+                    {% endif %}
+
+                    {%  if total_corpo_visits != 0  %}   
+                        <option value="?view=Corp-visits{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">Corpo. Visits {{ total_corpo_visits }}</option>
+                    {% endif %}
+                    
+                </select>
+                
+
+            </div>
+            <div class="page-title-right">
+                <button class='btn btn-info waves-effect waves-light' onclick="goBack()"> <i class="ri-arrow-left-line"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if view == 'SM-FW' %}
+
+<div class="row" >
+    <div class="col-xl-12">
+        <div class="card">          
+            <div class="card-body">
+                <div class="live-preview">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-nowrap mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">S.No</th>                            
+                                    <th scope="col">Name</th>
+                                    <th scope="col" class='text-center'>SM Name</th>
+                                                        
+                                    <th scope="col" class='text-center'>FW Date</th>       
+                                    <th scope="col" class='text-center'>Submission Date</th>       
+                                    <th scope="col" class='text-center'>Leads</th>          
+                                                                             
+                      
+                                    <th scope="col" class='text-center'>Leads Detail</th>
+                                    <th scope="col" class='text-center'>Action</th>
+                                    
+                                            
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in data %}
+                                <tr data-item-id="{{ item.id }}">
+                                    <td>{{ forloop.counter }}</td>                               
+                                    <td >{{ item.uname }}</td>
+                                    <td class='text-center'>{{ item.SM_name }}</td>
+                                    <td class='text-center'>{{ item.followUp_date|date:'d-m-y' }}</td>
+                                    <td class='text-center'>{{ item.submission_date}}</td>
+                                    <td class='text-center'>{{ item.No_leads }}</td>
+                                    <td class='text-center'>{{ item.lead_detail }}</td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                           
+                                            <div class="remove">
+                                                <button class="btn btn-sm btn-danger remove-item-btn" data-bs-toggle="modal" data-bs-target="#deleteRecordModal">Remove</button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}  
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% elif view == 'Home-Visit' %}
+<div class="row" >
+    <div class="col-xl-12">
+        <div class="card">          
+            <div class="card-body">
+                <div class="live-preview">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-nowrap mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">S.No</th>                            
+                                    <th scope="col">Name</th>
+                                    <th scope="col" class='t ext-center'>Customer Details</th>
+                                    <th scope="col" class='te xt-center'>Date</th>
+                                    <th scope="col" class='te xt-center'>Detail</th>
+                                    <th scope="col" class='te xt-center'>Home</th>
+                                    <th scope="col" class='te xt-center'>Co-Fellow</th>                                                       
+                                    <th scope="col" class='te xt-center'>Action</th>                                                       
+                                    {% comment %} <th scope="col" class='te xt-center'>Image</th>                                                        {% endcomment %}
+                                   
+                                            
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in data %}
+                             
+                                <tr data-item-id="{{ item.id }}">
+                                    <td>{{ forloop.counter }}</td>                               
+                                    <td >{{ item.name }}</td>
+                                    <td>{{ item.C_name }}<br> {{ item.C_ph }}<br></td>
+                                    <td class='t ext-center'>{{ item.date }}</td>
+                                    <td class='t ext-center'>{{ item.detail }}</td>
+                                    <td class='t ext-center'>{{ item.Site_name }}</td>
+                                    <td class='t ext-center'>{{ item.co_fellow }}</td>
+                                    {% comment %} <td class='t ext-center'>{{ item.images }}</td> {% endcomment %}
+                                    {% comment %} <td class='t ext-center'>
+                                        <img src="./media/HomeVisit/faizal-ahmad_2024-06-09_ssv_19-07-37.jpg" alt="Image" style="max-width: 100px; max-height: 100px;">
+                                    </td> {% endcomment %}
+                                    {% if request.session.teamIDs %}
+                            
+                                    {% else %}
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                            
+                                                <div class="remove">
+                                                    <button class="btn btn-sm btn-danger remove-item-btn" data-bs-toggle="modal" data-bs-target="#deleteRecordModal">Remove</button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    {% endif %}
+                                    </tr>
+                                    
+                                {% endfor %}  
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% elif view == 'Corp-visits' %}
+<div class="row" >
+    <div class="col-xl-12">
+        <div class="card">          
+            <div class="card-body">
+                <div class="live-preview">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-nowrap mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">S.No</th>                            
+                                    <th scope="col">Name</th>
+                                    <th scope="col" class='text-center'>Visit Date</th>
+                                                        
+                                    <th scope="col" class='text-center'>Corporate Name</th>       
+                                    <th scope="col" class='text-center'>Key Person</th>                                               
+                                    <th scope="col" class='text-center'>Persentation</th>
+                                    <th scope="col" class='text-center'>Reason </th>
+                                    <th scope="col" class='text-center'>Date for Persentation</th>
+                                    <th scope="col" class='text-center'>Co-Fellow</th>
+                                    <th scope="col" class='text-center'>Number of Person Met</th>
+                                    <th scope="col" class='text-center'>Action</th>
+                                            
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in data %}
+                                <tr  data-item-id="{{ item.id }}">
+                                    <td>{{ forloop.counter }}</td>                               
+                                    <td >{{ item.name }}</td>
+                                    <td class='text-center'>{{ item.visit_date|date:'d-m-y' }}</td>
+                                    <td class='text-center'>{{ item.corp_name }}</td>
+                                    <td class='text-center'>{{ item.key_person }}</td>
+                                    <td class='text-center'>{{ item.presentation }}</td>
+                                    <td class='text-center'>{{ item.reason }}</td>
+                                    
+                                    <td class='text-center'>{% if item.nxt_pre_date is not None %}{{ item.nxt_pre_date|date:'d-m-y' }}{% else %}-{% endif %}</td>
+
+                                    <td class='text-center'>{{ item.cofel_name }}</td>
+
+                                    <td class='text-center'>{{ item.meet_person }}</td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                           
+                                            <div class="remove">
+                                                <button class="btn btn-sm btn-danger remove-item-btn" data-bs-toggle="modal" data-bs-target="#deleteRecordModal">Remove</button>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                {% endfor %}  
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% elif view == 'Bookings' %}
+
+<div class="row" >
+    <div class="col-xl-12">
+        <div class="card">          
+            <div class="card-body">
+                <div class="live-preview">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-nowrap mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">S.No</th>                            
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Project</th>
+                                                        
+                                    {% comment %} <th scope="col">Last F/W</th>       
+                                    <th scope="col">Next F/W</th>                                                {% endcomment %}
+                                    {% comment %} <th scope="col" class='text-center'>Enquiry Type</th> {% endcomment %}
+                                    <th scope="col" class='text-center'>Result</th>                
+                                    
+                                    <th scope="col" >Remark</th>                
+                                    
+                                    
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in data %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>                               
+                                    <td>{{ item.Name }}<br> {{ item.Mobile }}<br>{% if item.Email is not None %} {{ item.Email }}{% endif %}</td>
+                                    <td class='remark-cell'>{% if item.Project is not None %} {{ item.Project }}{% else %} Not Selected{% endif %}</td>                                    
+                                    {% comment %} <td class='text-center'>{% if item.FollowUp_Date is not None %} {{ item.FollowUp_Date|date:'d-m-y' }} {% else %} - {% endif %} </td>   
+                                    <td class='text-center'>{% if item.Next_FollowUp1 is not None %} {{ item.Next_FollowUp1|date:'d-m-y' }} {% else %} - {% endif %}</td>                                                              {% endcomment %}
+                                    {% comment %} <td class='text-center'>{% if item.Enquirytype is not None %} {{ item.Enquirytype }} {% else %} - {% endif %}</td>                 {% endcomment %}
+                                    <td class='text-center'>{% if item.Result is not None %}{{ item.Result }} {% else %} - {% endif %}</td>                                                                        
+                                    <td class='remark-cell'>{% if item.Enquiry_Conclusion_Date is not None %} Booking Done On {{ item.Enquiry_Conclusion_Date }} By {{ item.HandledByEmployee }}{% else %} - {% endif %}</td>                                
+
+                                </tr>
+                                {% endfor %}  
+                            </tbody>
+                        </table>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% else %}
+
+<div class="row" >
+    <div class="col-xl-12">
+        <div class="card">          
+            <div class="card-body">
+                <div class="live-preview">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-nowrap mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">S.No</th>                            
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Project</th>
+                                                        
+                                    <th scope="col">Last F/W</th>       
+                                    <th scope="col">Next F/W</th>                                               
+                                    <th scope="col" class='text-center'>Enquiry Type</th>
+                                    <th scope="col" class='text-center'>Result</th>                
+                                    {% if view == 'SM-Leads' %} <th scope="col" >Broker Name</th>   </td>{% endif %}
+                                    <th scope="col" >Remark</th>                
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in data %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>                               
+                                    <td>{{ item.Name }}<br> {{ item.Mobile }}<br>{% if item.Email is not None %} {{ item.Email }}{% endif %}</td>
+                                    <td class='remark-cell'>{% if item.Project is not None %} {{ item.Project }}{% else %} Not Selected{% endif %}</td>                                    
+                                    <td class='text-center'>{% if item.FollowUp_Date is not None %} {{ item.FollowUp_Date|date:'d-m-y' }} {% else %} - {% endif %} </td>   
+                                    <td class='text-center'>{% if item.Next_FollowUp1 is not None %} {{ item.Next_FollowUp1|date:'d-m-y' }} {% else %} - {% endif %}</td>                                                             
+                                    <td class='text-center'>{% if item.Enquirytype is not None %} {{ item.Enquirytype }} {% else %} - {% endif %}</td>                
+                                    <td class='text-center'>{% if item.Result is not None %}{{ item.Result }} {% else %} - {% endif %}</td>        
+                                    {% if view == 'SM-Leads' %} <td class='text-center'>{% if item.Broker_Name is not None %} {{ item.Broker_Name }} {% else %} - {% endif %}</td>      {% endif %}
+                                                                
+                                    <td class='remark-cell'>{% if item.Remark1 is not None %} {{ item.Remark1 }} {% else %} - {% endif %}</td>                                
+                                </tr>
+                                {% endfor %}  
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+
+
+<div class="modal fade zoomIn" id="deleteRecordModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="btn-close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mt-2 text-center">
+                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
+                    <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                        <h4>Are you Sure ?</h4>
+                        <p class="text-muted mx-4 mb-0">Are you Sure You want to Remove this Record ?</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
+                    <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn w-sm btn-danger " id="delete-record">Yes, Delete It!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    
+    function goBack() {
+        window.history.back();
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+        window.onscroll = function() {myFunction() };
+        console.log('=======')
+        var navbar = document.getElementById("navbar");
+        var sticky = navbar.offsetTop;
+        
+        function myFunction() {  
+          if (window.pageYOffset >= sticky) {
+            navbar.classList.add("sticky")
+          } else {
+            navbar.classList.remove("sticky");
+          }
+        }
+    });
+    
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        let deleteItemId;
+    
+        
+        document.querySelectorAll('.remove-item-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                deleteItemId = this.closest('tr').getAttribute('data-item-id');
+            });
+        });
+    
+        
+        function getViewParameter() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('view');
+        }
+    
+        
+        document.getElementById('delete-record').addEventListener('click', function () {
+            const view = getViewParameter(); 
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+            fetch('/admin/Delete-Record/', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken  
+                },
+                body: JSON.stringify({ 
+                    'item_id': deleteItemId,
+                    'view': view  
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.querySelector(`tr[data-item-id="${deleteItemId}"]`).remove();
+                    $('#deleteRecordModal').modal('hide');
+                } else {
+                    console.error('Failed to delete record');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+    
+    
+
+    
+</script>
+{% endblock %}

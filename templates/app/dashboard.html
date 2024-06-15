@@ -1,0 +1,114 @@
+{% extends 'app/base.html' %}
+{% block content %}
+    <style>
+        .box-sh{
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        }
+    </style>
+       
+
+        <div class="row ui-mediabox fullwidth">
+            <div class="col s12">
+                <a class="img-wrap" data-fancybox="images" data-caption="Making the best of your fashion">
+                    <img class="z-depth-1" style="width: 100%;" src="/static/Form/images/corp.jpg">
+                </a>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="section">
+	           <h5 class="pagetitle">Dashboard</h5>
+	           <p>Your available options to feed data of daily workings.</p>
+	           <div class="divider"></div>
+            </div>
+        </div>	
+
+        
+    <div class="container">
+        <div class="section">           
+            <div class="row settings-row" >                
+                <div class="col s6">
+                    <div class="setting-box z-depth-1 center box-sh">
+                       <a style='color:#1e81b0;'><i>{{ pand_followUP }}</i><h6 style='color:#1e81b0;'>Today`s Pending F/W</h6></a>
+                    </div>
+                </div>                
+                
+                <div class="col s6">
+                    <div class="setting-box z-depth-1 center box-sh">
+                       <a style='color:#1e81b0;'><i>{{ total_events }}</i><h6 style='color:#1e81b0;'>Total Events Done</h6></a>
+                    </div>
+                </div>                
+            </div>
+            <div class="row settings-row" >   
+
+            {% for i in target_values %}                         
+                {% if i.Target_id is 1 %}
+                    <div class="col s6">
+                        <div class="setting-box z-depth-1 center box-sh">
+                        <a style='color:#1e81b0;'><i>{{ total_bookings }}/{{ i.target }} </i></a>
+                        {% comment %} <a style='color:#1e81b0;'><i>{{ total_bookings }}/{{ i.target }} </i> <span style='font-size:15px;'>({{percentage}}%)</span></a> {% endcomment %}
+                        <h6 style='color:#1e81b0;'>Booking </h6>
+                        
+                        </div>
+                    </div>
+                {% elif i.Target_id is 2 %}  
+                <div class="col s6">
+                    <div class="setting-box z-depth-1 center box-sh">
+                    <a style='color:#1e81b0;'><i>{% if total_corp_visit is None %}0{% else %}{{total_corp_visit}}{% endif %}/{{ i.target }}</i><h6 style='color:#1e81b0;'>Coporate Visit</h6></a>
+                    </div>
+                </div>
+                {% elif i.Target_id is 3 %}  
+                <div class="col s6">
+                    <div class="setting-box z-depth-1 center box-sh">
+                    <a style='color:#1e81b0;'><i>{{total_followUP}}/{{ i.target }}</i><h6 style='color:#1e81b0;'>Follow Up</h6></a>
+                    </div>
+                </div>
+               
+                {% elif i.Target_id is 5 %}  
+                <div class="col s6">
+                    <div class="setting-box z-depth-1 center box-sh">
+                    <a style='color:#1e81b0;'><i>{{ total_SM_FW }}/{{ i.target }}</i><h6 style='color:#1e81b0;'>SM Follow Up</h6></a>
+                    </div>
+                </div>
+               
+                        
+                {% elif i.Target_id is 7 %}  
+                <div class="col s6">
+                    <div class="setting-box z-depth-1 center box-sh">
+                    <a style='color:#1e81b0;'><i>{{ admission }}/{{ i.target }}</i><h6 style='color:#1e81b0;'>Admission</h6></a>
+                    </div>
+                </div>
+                             
+                {% elif i.Target_id is 8 %}  
+                <div class="col s6">
+                    <div class="setting-box z-depth-1 center box-sh">
+                    <a style='color:#1e81b0;'><i>{{ ip }}/{{ i.target }}</i><h6 style='color:#1e81b0;'>IP</h6></a>
+                    </div>
+                </div>                            
+                {% elif i.Target_id is 6 %}  
+                <div class="col s6">
+                    <div class="setting-box z-depth-1 center box-sh">
+                    <a style='color:#1e81b0;'><i>{{ total_site_visit }}/{{ i.target }}</i><h6 style='color:#1e81b0;'>Site Visit</h6></a>
+                    </div>
+                </div>
+                {% elif i.Target_id is 4 %}  
+                <div class="col s6">
+                    <div class="setting-box z-depth-1 center box-sh">
+                    <a style='color:#1e81b0;'><i>{{ total_home_visit }}/{{ i.target }}</i><h6 style='color:#1e81b0;'>Home Visit</h6></a>
+                    </div>
+                </div>
+                {% endif %}               
+            {% endfor %}
+        </div>
+            
+            
+        </div>
+    </div>
+    <br>
+	<br>
+	<br>
+	<br>
+	
+        
+ 
+{% endblock %}

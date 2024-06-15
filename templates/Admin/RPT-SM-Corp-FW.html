@@ -1,0 +1,179 @@
+{% extends 'Admin/base.html' %} 
+{% block content %}
+
+
+
+<div class="row">
+  <div class="col-12">
+      <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+          <h4 class="mb-sm-0">Sage Mitra F/W Report</h4>
+
+          <div class="page-title-right">
+              <ol class="breadcrumb m-0">
+                  
+                  <li class="breadcrumb-item active">Sage Mitra F/W Report</li>
+              </ol>
+          </div>
+
+      </div>
+  </div>
+</div>
+
+      
+<div class="row" id='navbar' >
+  <div class="col-12">
+      <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+        <form method="GET" action="{% url 'RPT_sm_corp' %}" id="monthForm">
+          <div class='row'>       
+            <div class='col-6'>
+                <label for="StartDate" class="form-label">Start Date</label>
+                <input type="date" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" id="StartDate" name='start_date' value="{{ start_date }}">
+            </div>
+            <div class='col-6'>
+                <label for="EndDate" class="form-label">End Date</label>
+                <input type="date" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" id="EndDate" name='end_date' value="{{ end_date }}">
+            </div>
+          </div>
+      </form>
+          <div class='col-3'>
+              
+          
+
+          </div>
+          <div class="page-title-right">
+              <button class='btn btn-info waves-effect waves-light' onclick="goBack()"> <i class="ri-arrow-left-line"></i></button>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="col-xl-12">
+  
+  <div class="card">      
+    
+      <div class="card-body">
+          <div class="live-preview">
+              <div class="table-responsive">
+                
+                  <table class="table table-bordered align-middle table-nowrap mb-0" style='margin-top:20px;'>
+                      <thead style='background-color:grey; color:white;'>
+
+                        <tr>
+                          
+                          <th>Team &#40;Members&#41;</th>                             
+                          <th class='text-center'>SM F/W</th>                           
+                          <th class='text-center'>Corp. Visits</th>
+                        </tr> 
+                      </thead>
+                      <tbody>
+                        {% for team, members in team_members.items %}
+                            {% comment %} <tr>
+                                <th style='background-color: #299cdb; color:white;'>{{ team }}</th>
+                                <th class='text-center'>0</th>
+                                <th class='text-center'>0</th>
+                            </tr>  {% endcomment %}
+                            <tr>
+                              <th style='background-color: #c6c6c6; '>{{ team }}</th>
+                              {% if team == 'eMarketing' %}  <th class='text-center' style='background-color:#c6c6c6;'>{{team_sm_counts.1}} </th>
+                              {% elif team == 'Local Corporate' %} <th class='text-center' style='background-color:#c6c6c6;'>{{team_sm_counts.2}} </th>
+                              {% elif team == 'Sage Golden Spring' %} <th class='text-center' style='background-color:#c6c6c6;'>{{team_sm_counts.3}} </th>
+                              {% elif team == 'Sage Milestone' %} <th class='text-center' style='background-color:#c6c6c6;'>{{team_sm_counts.4}} </th>
+                              {% elif team == 'Sage Nirvana' %} <th class='text-center' style='background-color:#c6c6c6;'>{{team_sm_counts.5}} </th>
+                              {% elif team == 'Back Office' %} <th class='text-center' style='background-color:#c6c6c6;'>{{team_sm_counts.6}} </th>
+                              {% elif team == 'Sagar Pearl' %} <th class='text-center' style='background-color:#c6c6c6;'>{{team_sm_counts.7}} </th>
+                              {% elif team == 'Sage Sun Villas' %} <th class='text-center' style='background-color:#c6c6c6;'>{{team_sm_counts.8}} </th>
+                              {% elif team == 'Sage Information Center' %} <th class='text-center' style='background-color:#c6c6c6;'>{{team_sm_counts.9}} </th>
+                              {% endif %}
+                              {% if team == 'eMarketing' %}  <th class='text-center' style='background-color:#c6c6c6;'>{{team_corp_counts.1}} </th>
+                              {% elif team == 'Local Corporate' %} <th class='text-center' style='background-color:#c6c6c6;'>{{team_corp_counts.2}} </th>
+                              {% elif team == 'Sage Golden Spring' %} <th class='text-center' style='background-color:#c6c6c6;'>{{team_corp_counts.3}} </th>
+                              {% elif team == 'Sage Milestone' %} <th class='text-center' style='background-color:#c6c6c6;'>{{team_corp_counts.4}} </th>
+                              {% elif team == 'Sage Nirvana' %} <th class='text-center' style='background-color:#c6c6c6;'>{{team_corp_counts.5}} </th>
+                              {% elif team == 'Back Office' %} <th class='text-center' style='background-color:#c6c6c6;'>{{team_corp_counts.6}} </th>
+                              {% elif team == 'Sagar Pearl' %} <th class='text-center' style='background-color:#c6c6c6;'>{{team_corp_counts.7}} </th>
+                              {% elif team == 'Sage Sun Villas' %} <th class='text-center' style='background-color:#c6c6c6;'>{{team_corp_counts.8}} </th>
+                              {% elif team == 'Sage Information Center' %} <th class='text-center' style='background-color:#c6c6c6;'>{{team_corp_counts.9}} </th>
+                              {% endif %}
+                              {% comment %} <th class='text-center'>{{team_corp_counts}}</th> {% endcomment %}
+                          </tr>          
+                            {% for member_name, member_data in members.items %}
+                                <tr>
+                                    <td style='padding-left:25px;'>{{ member_name }}</td>
+                                    <td class='text-center'> {{ member_data.total_sm_leads }}</td>
+                                    <td class='text-center'>{{ member_data.corp_visits }}</td>                                    
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                        {% comment %} <tr>
+                          <td>Grand Total</td>   
+                          <td class='text-center'>0</td>
+                          <td class='text-center'>0</td>
+                        </tr>{% endcomment %}
+                      </tbody>
+                  </table>                
+              </div>
+          </div>
+      </div>     
+  </div>  
+</div>
+<script>
+  function goBack() {
+    window.history.back();
+}
+  var startDateInput = document.getElementById('StartDate');
+  var endDateInput = document.getElementById('EndDate');
+
+
+  startDateInput.addEventListener('change', function() {
+   
+    if (startDateInput.value && endDateInput.value) {
+      
+      document.getElementById('monthForm').submit();
+    }
+  });
+
+  endDateInput.addEventListener('change', function() {
+    
+    if (startDateInput.value && endDateInput.value) {
+      
+      document.getElementById('monthForm').submit();
+    }
+  });
+  window.addEventListener('DOMContentLoaded', function() {
+    calculateTeamTotals();
+});
+  
+document.addEventListener('DOMContentLoaded', function() {
+  var teams = document.querySelectorAll('.card');
+  teams.forEach(function(team) {
+      var tableBody = team.querySelector('tbody');
+      var totalRow = document.createElement('tr');
+      var totalSMFW = 0;
+      var totalCorpVisits = 0;
+
+      var rows = tableBody.querySelectorAll('tr');
+      rows.forEach(function(row) {
+          var cells = row.querySelectorAll('td');
+          if (cells.length >= 3) {
+              totalSMFW += parseInt(cells[1].textContent);
+              totalCorpVisits += parseInt(cells[2].textContent);
+          }
+      });
+
+      totalRow.innerHTML = `
+          <td style='font-weight: 800;'>Grand Total</td>
+          <td class='text-center' style='font-weight: 800;'>${totalSMFW}</td>
+          <td class='text-center' style='font-weight: 800;'>${totalCorpVisits}</td>
+      `;
+      tableBody.appendChild(totalRow);
+  });
+});
+
+
+
+
+
+</script>
+
+
+{% endblock %}
+

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html class=" ">
+    {% load static %}
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+        <title>Dashboard</title>
+        <meta content="Mobile App" name="description" />
+        <meta content="themepassion" name="author" />
+
+        <!-- App Icons -->
+        <link rel="apple-touch-icon" sizes="60x60" href="{% static 'Form/images/icons/apple-icon-60x60.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'Form/images/icons/favicon-32x32.png' %}">
+        <link rel="manifest" href="{% static 'Form/images/icons/manifest.json' %}">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="{% static 'Form/images/icons/ms-icon-144x144.png' %}">
+        <meta name="theme-color" content="#ffffff">
+
+        <!-- CORE CSS FRAMEWORK - START -->
+        <link href="{% static 'Form/css/preloader.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+        <link href="{% static 'Form/css/materialize.min.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/>
+        <link href="{% static 'Form/fonts/mdi/materialdesignicons.min.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/>
+        <link href="{% static 'Form/plugins/perfect-scrollbar/perfect-scrollbar.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/>
+        <!-- CORE CSS FRAMEWORK - END -->
+
+        <!-- CORE CSS TEMPLATE - START -->
+        <link href="{% static 'Form/css/style.css' %}" type="text/css" rel="stylesheet" media="screen,projection" id="main-style"/>
+
+    </head>
+    <body class="html">
+        <body class="html">
+            <div class="preloader-background">
+                <div class="preloader-wrapper">
+                    <div id="preloader"></div>
+                </div>
+            </div>
+    
+            <!-- START navigation -->
+            <nav class="navigation" role="navigation">
+                <div class="nav-wrapper container">
+                    <a id="logo-container" href="{% url 'EmployeeDashboard' %}" class=" brand-logo " ><i class="mdi mdi-ring"></i>The Sage</a>
+                    <a href="#" data-target="slide-nav" class="waves-effect waves-circle navicon sidenav-trigger show-on-large"><i class="mdi mdi-menu"></i></a>
+                </div>
+            </nav>
+            <ul id="slide-nav" class="sidenav sidemenu">
+                <li class="menu-close"><i class="mdi mdi-close"></i></li>
+                
+    
+                <li class="menulinks">
+                    <ul class="collapsible">
+                    <!-- SIDEBAR - START -->
+                        <!-- MAIN MENU - START -->
+                        <li class="sh-wrap"><div class="subheader"> {{ request.session.first_name }}</div></li>
+                        <li class="lvl1 ">
+                            <div class="waves-effect">
+                                <a href="{% url 'EmployeeDashboard' %}">
+                                    <i class="mdi mdi-chart-pie"></i>
+                                    <span class="title">Dashboard</span>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="lvl1 ">
+                            <div class="waves-effect">
+                                <a href="{% url 'Set_Target' %}">
+                                    <i class="mdi mdi-target"></i>
+                                    <span class="title">Set Monthly Target</span>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="lvl1 ">
+                            <div class="waves-effect">
+                                <a href="{% url 'SageMitra' %}">
+                                    <i class="mdi mdi-cellphone-basic"></i>
+                                    <span class="title">Sage Mitra Followup</span>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="lvl1 ">
+                            <div class="waves-effect">
+                                <a href="{% url 'EmployeeCorpoVisit' %}">
+                                    <i class="mdi mdi-office-building"></i>
+                                    <span class="title">Corporate Visit</span>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="lvl1 ">
+                            <div class="waves-effect">
+                                <a href="{% url 'Home_visit' %}">
+                                    <i class="mdi mdi-sitemap"></i>
+                                    <span class="title">Home Visit</span>
+                                </a>
+                            </div>
+                        </li> 
+                      
+                            <li class="lvl1">
+                                <div class="waves-effect">
+                                    <a href="{% url 'AccEvent' %}">
+                                        <i class="mdi mdi-calendar"></i>
+                                        <span class="title">Event</span>
+                                    </a>
+                                </div>
+                            </li>
+                      
+                        <li class="lvl1 ">
+                            <div class="waves-effect">
+                                <a href="{% url 'Admission' %}">
+                                    <i class="mdi mdi-school"></i>
+                                    <span class="title">Admission Done</span>
+                                </a>
+                            </div>
+                        </li>
+                        
+                        <li class="lvl1 ">
+                            <div class="waves-effect">
+                                <a href="{% url 'IP' %}">
+                                    <i class="mdi mdi-hospital"></i>
+                                    <span class="title">IP Done</span>
+                                </a>
+                            </div>
+                        </li>
+                        
+                        {% comment %} {% if request.session.team_id.0 == 2 or request.session.team_id.0 == 9 %}
+                            <li class="lvl1">
+                                <div class="waves-effect">
+                                    <a href="{% url 'AccEvent' %}">
+                                        <i class="mdi mdi-calendar"></i>
+                                        <span class="title">Event</span>
+                                    </a>
+                                </div>
+                            </li>
+                        {% endif %} {% endcomment %}
+
+                        <!-- MAIN MENU - END -->
+                    <!--  SIDEBAR - END -->
+                    </ul>
+                                    <a href="{% url 'Logout' %}" class="waves-effect waves-light btn-large bg-primary" style="float:center; margin-top:12px;">Logout</a>
+    
+                </li>
+                <!-- <li class="copy-spacer"></li>
+                <li class="copy-wrap">
+                    <div class="copyright">&copy; Copyright @ themepassion</div>
+                </li> -->
+            </ul>
+
+        {% block content %}
+        
+        {% endblock %}
+
+    
+   
+        {% comment %} <div class='row footer-menu'>
+            <div class='col-3'>          
+                <li><a href="{% url 'EmployeeCorpoVisit' %}" ><i class="mdi mdi-office-building"></i><span>Corp. Visit</span></a></li>
+            </div>
+            <div class='col-3'> 
+                <li><a href="{% url 'AccEvent' %}" ><i class="mdi mdi-calendar"></i><span>Event</span></a></li>
+            </div>
+            <div class='col-3'> 
+                <li><a href="{% url 'AccEvent' %}" ><i class="mdi mdi-calendar"></i><span>Event</span></a></li>
+            </div>
+            <div class='col-3'> 
+                <li><a href="{% url 'AccEvent' %}" ><i class="mdi mdi-calendar"></i><span>Event</span></a></li>
+            </div>
+        </div> {% endcomment %}
+
+
+    {% if request.session.team_id.0 == 2 or request.session.team_id.0 == 9 %}  
+    <div class="footer-menu">
+        <div class='row'>
+            <div class='col s3 custom1'><li><a href="{% url 'EmployeeDashboard' %}" ><i class="mdi  mdi-home-outline"></i><span>Home</span></a></li></div>
+            <div class='col s3 custom1'><li><a href="{% url 'EmployeeCorpoVisit' %}" ><i class="mdi mdi-office-building"></i><span>Corp. Visit</span></a></li></div>
+            <div class='col s3'><li><a href="{% url 'AccEvent' %}" ><i class="mdi mdi-calendar"></i><span>Event</span></a></li></div> 
+            
+            <div class='col s3 custom1'><li><a href="{% url 'SageMitra' %}" ><i class="mdi mdi-account-multiple-outline"></i><span>SM F/W</span></a></li></div>
+        </div>
+    </div> 
+    {% else %}
+    
+    <div class="footer-menu">
+        <div class='row'>
+            <div class='col s4 custom1'><li><a href="{% url 'EmployeeDashboard' %}" ><i class="mdi  mdi-home-outline"></i><span>Home</span></a></li></div>
+            <div class='col s4 custom1'><li><a href="{% url 'EmployeeCorpoVisit' %}" ><i class="mdi mdi-office-building"></i><span>Corp. Visit</span></a></li></div>
+            {% comment %} <div class='col-3'><li><a href="{% url 'AccEvent' %}" ><i class="mdi mdi-calendar"></i><span>Event</span></a></li></div> {% endcomment %}
+           
+            <div class='col s4 custom1'><li><a href="{% url 'SageMitra' %}" ><i class="mdi mdi-account-multiple-outline"></i><span>SM F/W</span></a></li></div>
+        </div>
+        <ul>
+          {% comment %} <li><a href="{% url 'EmployeeCorpoVisit' %}" ><i class="mdi mdi-office-building"></i><span>Corp. Visit</span></a></li>
+          <li><a href="{% url 'AccEvent' %}" ><i class="mdi mdi-calendar"></i><span>Event</span></a></li>
+          <li><a href="{% url 'EmployeeDashboard' %}" ><i class="mdi  mdi-home-outline"></i><span>Home</span></a></li>
+          <li><a href="{% url 'SageMitra' %}" ><i class="mdi mdi-account-multiple-outline"></i><span>SM Followup</span></a></li>
+        </ul> {% endcomment %}
+    </div> 
+    
+    {% endif %}
+      <!-- CORE JS FRAMEWORK - START --> 
+      <script src="{% static 'Form/js/jquery-2.2.4.min.js' %}"></script>
+      <script src="{% static 'Form/js/materialize.js' %}"></script>
+      <script src="{% static 'Form/plugins/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script> 
+      <!-- CORE JS FRAMEWORK - END --> 
+
+      <!-- CORE TEMPLATE JS - START --> 
+      <script src="{% static 'Form/js/init.js' %}"></script>
+      <script src="{% static 'Form/js/settings.js' %}"></script>
+      <script src="{% static 'Form/js/scripts.js' %}"></script>
+      <!-- END CORE TEMPLATE JS - END --> 
+
+      <script type="text/javascript">
+          document.addEventListener("DOMContentLoaded", function(){
+              $('.preloader-background').delay(10).fadeOut('slow');
+          });
+      </script>
+
+    </body>
+    </html>

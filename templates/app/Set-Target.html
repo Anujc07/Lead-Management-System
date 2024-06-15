@@ -1,0 +1,132 @@
+{% extends "app/base.html" %}
+{% block content %}
+<style>
+    input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+</style>
+<div class="container">
+    <div class="sect">
+       <h5 class="pagetitle">Set Target</h5>
+       <p>Feed Your Monthly Target.</p>
+       
+
+        {% if message %}
+            <p style='background-color:yellow; margin-right:82%;'> {{ message }} </p>
+        {% endif %}
+      
+    </div>
+</div> 
+
+<!-- Form Section Starts -->
+<div class="container">
+    <div class="section">
+        <form action='{% url 'Set_Target' %}' method='POST'>
+            {% csrf_token %}
+            <div class="row">
+                <div class="input-field col s12">                    
+                    <input id="event_title11" type="text" name='emp_name' disabled>
+                    <label for="event_title11">{{ request.session.first_name }}</label>
+                </div>
+            </div>
+            <div class="row">
+                <label>Select the Month</label>
+                <div class="input-field col s12">                   
+                    <select name='month'>
+                      <option>{{ current_month }}</option>
+                      {% for i in months %}
+                        <option value="{{i}}">{{ i }}</option>
+                      {% endfor %}
+                    </select>                       
+                </div>                
+            </div>
+            <div class="row">
+                <label>Select the Year</label>
+                <div class="input-field col s12">                   
+                    <select name='year'>
+                        <option value="{% now 'Y' %}">{% now 'Y' %}</option>          
+                    </select>                  
+                </div>                
+            </div>
+           
+            <div class="row">
+                <div class="col s12">                  
+                    <label for="datepicker-input2">Enter Booking Target</label>  
+                    <input type="number" name='booking' class='datepicker datepicker2'  value="{% for item in data %}{% if item.Target_id is 1 %}{{ item.target }}{% endif %}{% endfor %}" required>
+                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">                   
+                    <label for="datepicker-input3">Enter Corporate Target</label>
+                    <input type="number" id="datepicker-input3" class="datepicker datepicker3" name='corporate' value="{% for item in data %}{% if item.Target_id is 2 %}{{ item.target }}{% endif %}{% endfor %}" required>
+                    
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s12">
+                    <label for="timepicker-input4">Enter Follow Up Target</label>
+                    <input type="number" id="timepicker-input4" class="timepicker4" name='followup' value="{% for item in data %}{% if item.Target_id is 3 %}{{ item.target }}{% endif %}{% endfor %}" required>
+                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <label for="timepicker-input5">Enter Home Visit Target</label>
+                    <input type="number" id="timepicker-input5" class="timepicker5" name='homevisit' value="{% for item in data %}{% if item.Target_id is 4 %}{{ item.target }}{% endif %}{% endfor %}" required>
+                   
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <label for="timepicker-input6">Enter SM Follow Up Target</label>
+                    <input type="number" id="timepicker-input6" class="timepicker6" name='sm_mitra' value="{% for item in data %}{% if item.Target_id is 5 %}{{ item.target }}{% endif %}{% endfor %}" required> 
+                   
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">          
+                    <label for="timepicker-input7">Enter Site Visit Target</label>          
+                    <input type="number" id="timepicker-input7" class="timepicker7" name='sitevisit' value="{% for item in data %}{% if item.Target_id is 6 %}{{ item.target }}{% endif %}{% endfor %}" required>
+                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">          
+                    <label for="timepicker-input7">Enter Admission Target</label>          
+                    <input type="number" id="timepicker-input7" class="timepicker7" name='admission' value="{% for item in data %}{% if item.Target_id is 7 %}{{ item.target }}{% endif %}{% endfor %}" required>
+                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">          
+                    <label for="timepicker-input7">Enter IP Patient</label>          
+                    <input type="number" id="timepicker-input7" class="timepicker7" name='ip' value="{% for item in data %}{% if item.Target_id is 8 %}{{ item.target }}{% endif %}{% endfor %}" required>
+                    
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col s12">
+                    <button type='submit' class="waves-effect waves-light btn-large bg-primary">Save</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">&nbsp;</div>
+            </div>
+        </form>
+    </div>        
+</div>
+<br>
+<br>
+
+
+{% endblock %}

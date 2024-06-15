@@ -1,0 +1,121 @@
+{% extends 'Admin/base.html' %} 
+{% block content %}
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0">Current State Funnel Report</h4>
+  
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    
+                    <li class="breadcrumb-item active">Current State Funnel Report</li>
+                </ol>
+            </div>
+  
+        </div>
+    </div>
+</div>
+<div class="row" id='navbar' >
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+          <form method="GET" action="{% url 'RPT_funnel' %}" id="monthForm">
+            <div class='row'>       
+              <div class='col-6'>
+                  <label for="StartDate" class="form-label">Start Date</label>
+                  <input type="date" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" id="StartDate" name='start_date' value="{{ start_date }}">
+              </div>
+              <div class='col-6'>
+                  <label for="EndDate" class="form-label">End Date</label>
+                  <input type="date" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" id="EndDate" name='end_date' value="{{ end_date }}">
+              </div>
+            </div>
+        </form>
+           
+            <div class="page-title-right">
+                <button class='btn btn-info waves-effect waves-light' onclick="goBack()"> <i class="ri-arrow-left-line"></i></button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+
+
+<div class="col-xl-12">
+    <div class="card">
+        <div class="card-body">               
+            <div class="live-preview">
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle table-nowrap mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">S.NO.</th>
+                                <th scope="col">Name</th>
+                                <th scope="col" class='text-center'>Leads</th>
+                               
+                                <th scope="col" class='text-center'>Missed F/W</th>
+                                <th scope="col" class='text-center'>Hot Leads</th>
+                                <th scope="col" class='text-center'>Opportunity</th>
+                                <th scope="col" class='text-center'>Proposal</th>
+                                <th scope="col" class='text-center'>Cold</th>
+                                <th scope="col" class='text-center'>Closed/Booked</th>                                    
+                            </tr>
+                        </thead>
+                        <tbody>       
+                            
+                                {% for item in data %}
+                              
+                                    <tr>                                        
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ item.HandledByEmployee }}</td>
+                                        <td class='text-center'>{{ item.total_leads }}</td>
+                                        {% for i in follow %}                                        
+                                            {% if i.name == item.HandledByEmployee %} <td class='text-center'>{{ i.missed_followUp }}</td>{% endif %}
+                                        {% endfor %}
+                                        <td class='text-center'>{{ item.total_hot_leads }}</td>
+                                        <td class='text-center'>{{ item.total_opportunity }}</td>
+                                        <td class='text-center'>{{ item.total_proposal }}</td> 
+                                        <td class='text-center'>{{ item.total_cold }}</td> 
+                                        <td class='text-center'>{{ item.total_closed }}/{{ item.total_bookings }}</td>                       
+                                    </tr>
+                                {% endfor %}
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function goBack() {
+      window.history.back();
+  }
+  
+      var startDateInput = document.getElementById('StartDate');
+      var endDateInput = document.getElementById('EndDate');
+  
+  
+      startDateInput.addEventListener('change', function() {
+       
+        if (startDateInput.value && endDateInput.value) {
+          
+          document.getElementById('monthForm').submit();
+        }
+      });
+  
+      endDateInput.addEventListener('change', function() {
+        
+        if (startDateInput.value && endDateInput.value) {
+          
+          document.getElementById('monthForm').submit();
+        }
+      });
+  
+     
+      
+  </script>
+
+{% endblock %}

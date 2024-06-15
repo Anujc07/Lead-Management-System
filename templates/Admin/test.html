@@ -1,0 +1,251 @@
+{% extends 'Admin/base.html' %} 
+{% block content %}
+
+<div class="row">
+  <div class="col-12">
+      <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+          <h4 class="mb-sm-0">Daily Team Performance Report</h4>
+
+          <div class="page-title-right">
+              <ol class="breadcrumb m-0">
+                  
+                  <li class="breadcrumb-item active">Daily Team Performance Report</li>
+              </ol>
+          </div>
+
+      </div>
+  </div>
+</div>
+<div class="row" id='navbar' >
+  <div class="col-12">
+      <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+        <form method="GET" action="{% url 'RPT_team_per' %}" id="monthForm">
+          <div class='row'>       
+            <div class='col-6'>
+                <label for="StartDate" class="form-label">Start Date</label>
+                <input type="date" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" id="StartDate" name='start_date' value="{{ start_date }}">
+            </div>
+            <div class='col-6'>
+                <label for="EndDate" class="form-label">End Date</label>
+                <input type="date" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" id="EndDate" name='end_date' value="{{ end_date }}">
+            </div>
+          </div>
+      </form>
+         
+          <div class="page-title-right">
+              <button class='btn btn-info waves-effect waves-light' onclick="goBack()"> <i class="ri-arrow-left-line"></i></button>
+          </div>
+      </div>
+  </div>
+</div>
+{% for team, members in team_members.items %}
+<div class="card">      
+    <div class="card-body">
+        <div class="live-preview">
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle table-nowrap mb-0" style='margin-top:20px;'>
+                    <thead>
+                      <tr>
+                        <th colspan='8' class='text-center'>{{ team|upper }}</th>                    
+                      </tr>  
+                      <tr>
+                        <th>S.No.</th>
+                        <th>Member</th>
+                        <th class='text-center'>Bookings</th>     
+                        <th class='text-center'>Home Visits</th>     
+                        <th class='text-center'>Corp. Visits</th>     
+                        <th class='text-center'>Customer F/W</th>                    
+                        <th class='text-center'>New Leads</th>  
+                        <th class='text-center'>SM F/W</th> 
+                        {% comment %} <th class='text-center'>Target Value</th>   {% endcomment %}
+                      </tr> 
+                    </thead>
+                    <tbody class='tbody'>
+                      {% for member_name, member_data in members.items %}                       
+                          <tr>
+                              <td>{{ forloop.counter }}</td>
+                              <td>{{ member_name }}</td>
+                              <td class='text-center'><span class='first'>{{ member_data.bookings }}</span><span class='split' hidden>{% for target_value in member_data.target_values %}{% if target_value.Target_id == 1 %}{{ target_value.target }}{% endif %}{% endfor %}</span></td>
+                              <td class='text-center'><span class='second'>{{ member_data.home_visit }}</span><span class='split' hidden>{% for target_value in member_data.target_values %}{% if target_value.Target_id == 4 %}{{ target_value.target }}{% endif %}{% endfor %}</span></td>
+                              <td class='text-center'><span class='third'>{{ member_data.corp_visits }}</span><span class='split' hidden>{% for target_value in member_data.target_values %}{% if target_value.Target_id == 2 %}{{ target_value.target }}{% endif %}{% endfor %}</span></td>
+                              <td class='text-center'><span class='fourth'>{{ member_data.customerfollowup }}</span><span class='split' hidden>{% for target_value in member_data.target_values %}{% if target_value.Target_id == 3 %}{{ target_value.target }}{% endif %}{% endfor %}</span></td>
+                              <td class='text-center'><span class='fifth'>{{ member_data.new_leads }}</span></td>
+                              <td class='text-center'><span class='sixth'>{{ member_data.total_sm_leads }}</span><span class='split' hidden>{% for target_value in member_data.target_values %}{% if target_value.Target_id == 5 %}{{ target_value.target }}{% endif %}{% endfor %}</span></td>            
+                          </tr>                       
+                      {% endfor %}
+                  </tbody>
+                  
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+<script>
+  function goBack() {
+    window.history.back();
+  }
+
+var startDateInput = document.getElementById('StartDate');
+var endDateInput = document.getElementById('EndDate');
+
+
+startDateInput.addEventListener('change', function() {           
+    if (startDateInput.value && endDateInput.value) {
+        document.getElementById('monthForm').submit();
+    }
+});
+
+endDateInput.addEventListener('change', function() {      
+    if (startDateInput.value && endDateInput.value) {      
+      document.getElementById('monthForm').submit();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    var teams = document.querySelectorAll('.card');
+    teams.forEach(function(team) {
+        var tableBody = team.querySelector('tbody');
+        var totalRow = document.createElement('tr');
+        totalRow.innerHTML = `<td colspan='2' style='font-weight:800;'>Grand Total</td>`;
+        var totalBookings = 0;
+        var totalHomeVisits = 0;
+        var totalCorpVisits = 0;
+        var totalCustomerFW = 0;
+        var totalNewLeads = 0;
+        var totalSmFW = 0;
+        var rows = tableBody.querySelectorAll('tr');
+        rows.forEach(function(row) {
+            var bookingSpan = row.querySelector('.first');
+            if (bookingSpan) {
+                var bookingValue = bookingSpan.textContent.trim();
+                totalBookings += parseInt(bookingValue) || 0;
+            }
+
+            var homeVisitSpan = row.querySelector('.second');
+            if (homeVisitSpan) {
+                var homeVisitValue = homeVisitSpan.textContent.trim();
+                totalHomeVisits += parseInt(homeVisitValue) || 0;
+            }
+
+            var corpVisitSpan = row.querySelector('.third');
+            if (corpVisitSpan) {
+                var corpVisitValue = corpVisitSpan.textContent.trim();
+                totalCorpVisits += parseInt(corpVisitValue) || 0;
+            }
+
+            var customerFWSpan = row.querySelector('.fourth');
+            if (customerFWSpan) {
+                var customerFWValue = customerFWSpan.textContent.trim();
+                totalCustomerFW += parseInt(customerFWValue) || 0;
+            }
+
+            var newLeadsSpan = row.querySelector('.fifth');
+            if (newLeadsSpan) {
+                var newLeadsValue = newLeadsSpan.textContent.trim();
+                totalNewLeads += parseInt(newLeadsValue) || 0;
+            }
+
+            var smFWSpan = row.querySelector('.sixth');
+            if (smFWSpan) {
+                var smFWValue = smFWSpan.textContent.trim();
+                totalSmFW += parseInt(smFWValue) || 0;
+            }
+        });
+  
+        totalRow.innerHTML += `<td class='text-center' style='font-weight:800;'>${totalBookings}</td><td class='text-center' style='font-weight:800;'>${totalHomeVisits}</td><td class='text-center' style='font-weight:800;'>${totalCorpVisits}</td><td class='text-center' style='font-weight:800;'>${totalCustomerFW}</td><td class='text-center' style='font-weight:800;'>${totalNewLeads}</td><td class='text-center' style='font-weight:800;'>${totalSmFW}</td>`;
+        tableBody.appendChild(totalRow); // Use appendChild instead of insertBefore
+    });
+});
+  
+document.addEventListener('DOMContentLoaded', function() {
+    var teams = document.querySelectorAll('.card');
+    teams.forEach(function(team) {
+        var tableBody = team.querySelector('tbody');
+        var totalRow = document.createElement('tr');
+        totalRow.innerHTML = `<td colspan='2' style='font-weight:800;'>Monthly Target</td>`;
+        var targetBookings = 0;
+        var targetHomeVisits = 0;
+        var targetCorpVisits = 0;
+        var targetCustomerFW = 0;
+        var targetNewLeads = 0;
+        var targetSmFW = 0;
+        var date = new Date();
+        var currentDay = date.getDate();
+
+        function getCurrentWeekNumber() {
+            var date = new Date();
+            var dayOfMonth = date.getDate();
+            var month = date.getMonth();
+            var year = date.getFullYear();
+            var firstDayOfMonth = new Date(year, month, 1);
+            var firstDayOfWeek = firstDayOfMonth.getDay();
+            firstDayOfWeek = (firstDayOfWeek + 6) % 7;
+        
+            // Calculate the week number
+            var currentWeekNumber = Math.ceil((dayOfMonth + firstDayOfWeek) / 7);
+        
+            return currentWeekNumber;
+        }
+        
+        var currentWeekNumber = getCurrentWeekNumber();
+
+        var rows = tableBody.querySelectorAll('tr');
+        rows.forEach(function(row) {
+            var cells = row.querySelectorAll('td');
+            if (cells.length >= 8) {
+                var bookingSpan = cells[2].querySelector('span.split');
+                if (bookingSpan) {
+                    var bookingValue1 = bookingSpan.textContent.trim();
+                    var bookingValue = (bookingValue1/currentWeekNumber);
+                    targetBookings += parseFloat(bookingValue) || 0;
+                }
+                
+                var homeVisitSpan = cells[3].querySelector('span.split');
+                if (homeVisitSpan) {
+                    var homeVisitValue1 = homeVisitSpan.textContent.trim();
+                    var homeVisitValue = (homeVisitValue1/currentWeekNumber);
+                    targetHomeVisits += parseFloat(homeVisitValue) || 0;
+                }
+                
+                var corpVisitSpan = cells[4].querySelector('span.split');
+                if (corpVisitSpan) {
+                    var corpVisitValue1 = corpVisitSpan.textContent.trim();
+                    var corpVisitValue = (corpVisitValue1/currentWeekNumber);
+                    targetCorpVisits += parseFloat(corpVisitValue) || 0;
+                }
+                
+                var customerFWSpan = cells[5].querySelector('span.split');
+                if (customerFWSpan) {
+                    var customerFWValue1 = customerFWSpan.textContent.trim();
+                    var customerFWValue = (customerFWValue1/currentWeekNumber);
+                    targetCustomerFW += parseFloat(customerFWValue) || 0;
+                }
+                
+                var smFWSpan = cells[7].querySelector('span.split');
+                if (smFWSpan) {
+                    var smFWValue1 = smFWSpan.textContent.trim();
+                    var smFWValue = (smFWValue1/currentWeekNumber);
+                    targetSmFW += parseFloat(smFWValue) || 0;
+                }
+            }
+        });
+
+        // Display only integer part of the totals using Math.floor()
+        targetBookings = Math.floor(targetBookings);
+        targetHomeVisits = Math.floor(targetHomeVisits);
+        targetCorpVisits = Math.floor(targetCorpVisits);
+        targetCustomerFW = Math.floor(targetCustomerFW);
+        targetSmFW = Math.floor(targetSmFW);
+
+        // Append totals to totalRow
+        totalRow.innerHTML += `<td class='text-center' style='font-weight:800;'>${targetBookings}</td><td class='text-center' style='font-weight:800;'>${targetHomeVisits}</td><td class='text-center' style='font-weight:800;'>${targetCorpVisits}</td><td class='text-center' style='font-weight:800;'>${targetCustomerFW}</td><td class='text-center' style='font-weight:800;'>${targetNewLeads}</td><td class='text-center' style='font-weight:800;'>${targetSmFW}</td>`;
+        tableBody.insertBefore(totalRow, tableBody.secondChild);
+    });
+});
+
+  
+
+
+</script>
+{% endblock %}

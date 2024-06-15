@@ -1,0 +1,212 @@
+{% extends 'app/base.html' %}
+{% block content %}
+
+<style>
+    input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+</style>
+
+        <!-- END navigation -->
+
+        <div class="container">
+            <div class="sect">
+               <h5 class="pagetitle">Sage Event Form</h5>
+               <p>Feed Your Sage Event Details.</p>
+               <div class="divider"></div>
+            </div>
+        </div> 
+        {% comment %} <div class='row'>
+            <div class='col s6' style='width:auto; margin-left:10%; display: contents; justify-content: center'>
+                {% if success_message %}
+                    <div class="success-messages" style='text-align:center; '>
+                        {{ success_message }}
+                        
+                    </div>
+                {% endif %}
+                {% if error_message %}
+                    <div id="error-message" class="error-messages" style='text-align:center; '>
+                        {{ error_message }}
+                        
+                    </div>
+                {% endif %}
+            </div>
+        </div> {% endcomment %}
+        
+
+        <!-- Form Section Starts -->
+        <div class="container">
+            <div class="section">
+                <form action='{% url 'AccEvent' %}' method='POST'>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="input-field col s12">
+                           
+                            <input id="event_title11" type="text" name='name' required value="{{ request.session.first_name }}" disabled>
+                            <label for="event_title11"></label>
+                        </div>
+                    </div>  
+
+                    <div class="row" >                        
+                        <div class="input-field col s12">                           
+                                <select name='Event_type'>
+                                  <option> Select Event Type</option>
+                                  {% for i in event_type %}
+                                  <option value='{{ i }}'> {{ i }} </option>
+                                  {% endfor %}
+                                  <option value='other'>Other</option>
+                                </select>                             
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            {% comment %} <i class="mdi mdi-account prefix"></i> {% endcomment %}
+                            <input id="event_title11" type="text" name='Event_name'>
+                            <label for="event_title11">Enter Event Name</label>
+                        </div>
+                    </div>
+
+                    {% comment %} <div class="row">
+                        <div class="input-field col s12">
+                            
+                            <input type="text" id="datepicker-input2" class="datepicker datepicker2" name='owner_name' required>
+                            <label for="datepicker-input2">Enter Owner Name</label>
+                        </div>
+                    </div> {% endcomment %}
+
+                    
+                    <div class="row">
+                        <div class="input-field col s12">
+                            {% comment %} <i class="mdi mdi-calendar prefix"></i> {% endcomment %}
+                            <input type="date" id="start-date" class="datepicker datepicker" name="start_date" onfocus="(this.type='date')" onblur="(this.type='text')" required>
+                            <label for="start-date">Start Date <span style="color:red; font-size:18px;">*</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            {% comment %} <i class="mdi mdi-calendar prefix"></i> {% endcomment %}
+                            <input type="date" id="end-date" class="datepicker datepicker" name="end_date" onfocus="(this.type='date')" onblur="(this.type='text')" required>
+                            <label for="end-date">End Date <span style="color:red; font-size:18px;">*</span></label>
+                        </div>
+                    </div>
+                    <div class="row">                        
+                        <div class="input-field col s12">
+                            <textarea id="textarea2" name='event_details' class="materialize-textarea" data-length="1200"></textarea>
+                            <label for="textarea2">Event Details</label>
+                          </div>
+                    </div>
+                    {% comment %} <div class="row">
+                        <div class="input-field col s12">
+                            <input type="text" id="datepicker-input3" class="datepicker datepicker3" name='Event_Type' required>
+                            <label for="datepicker-input3">Type</label>
+                        </div>
+                    </div> {% endcomment %}
+
+                    <div class="row">
+                        <div class="input-field col s12">
+                            {% comment %} <i class="mdi mdi-table prefix"></i> {% endcomment %}
+                            <input type="number" id="timepicker-input2" class="timepicker2" name='num_attendees' required>
+                            <label for="timepicker-input2">Number of Attendees </label>
+                        </div>
+                    </div>
+                    {% comment %} <div class="row">
+                        <div class="col s12 pad-0">
+                            <h5 class="bot-18 sec-tit" style="font-size: 16px;">ACC Presentation</h5>
+                            <p>
+                                <label>
+                                    <input type="radio" name="presentation" value="done" class="with-gap" />
+                                    <span>Yes</span>
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <input type="radio" name="presentation" value="not_done" class="with-gap" />
+                                    <span>No</span>
+                                </label>
+                            </p>
+                            
+                        </div>
+                    </div>      {% endcomment %}
+                    <div class="row">
+                        <div class="input-field col s12">
+                            {% comment %} <i class="mdi mdi-table prefix"></i> {% endcomment %}
+                            <input type="number" id="timepicker-input3" class="timepicker3" name='num_leads' required>
+                            <label for="timepicker-input3">Number Of Leads </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12">
+                            <button type='submit' class="waves-effect waves-light btn-large bg-primary">Save</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12">&nbsp;</div>
+                    </div>
+                </form>
+            </div>        
+        </div>
+		<br>
+		<br>
+		
+        <!-- Form Section Ends -->
+
+        <!-- Bottom App Sticky Menu -->
+        
+<!-- Modal HTML -->
+
+
+
+<script>
+    // Get today's date in the format YYYY-MM-DD
+    document.addEventListener('DOMContentLoaded', function() {
+        var today = new Date().toISOString().slice(0, 10);
+        document.getElementById('start-date').value = today;
+        document.getElementById('end-date').value = today;
+    });
+    // Get the modal
+    var modal = document.getElementById("messageModal");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks the close button, close the modal
+    function closeModal() {
+        modal.style.display = "none";
+    }
+
+    // Function to display the modal with message
+    function displayModal(message) {
+        var modalMessage = document.getElementById("modalMessage");
+        modalMessage.innerHTML = message;
+        modal.style.display = "block";
+    }
+
+    // Close the modal after 5 seconds
+    function autoCloseModal() {
+        setTimeout(function() {
+            closeModal();
+        }, 50000000);
+    }
+
+    // Trigger modal display for success message
+    {% if success_message %}
+        displayModal("{{ success_message }}", "success-message");
+        autoCloseModal();
+    {% endif %}
+
+    // Trigger modal display for error message
+    {% if error_message %}
+        displayModal("{{ error_message }}", "error-message");
+        autoCloseModal();
+    {% endif %}
+</script>
+
+
+{% endblock %}

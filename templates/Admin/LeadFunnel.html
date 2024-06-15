@@ -1,0 +1,385 @@
+{% extends 'Admin/base.html' %} 
+{% block content %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0">Lead Funnel</h4>
+  
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    
+                    <li class="breadcrumb-item active">Lead Funnel</li>
+                </ol>
+            </div>
+  
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card-header">
+            <form id="formdata" onsubmit="submitFormData(event)">
+                <div class="row">
+                    <div class="col-xxl-2 col-md-2">
+                        <div>
+                            <label for="StartDate" class="form-label">Start Date</label>
+                            <input type="date" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" id="StartDate" name='start_date'>
+                        </div>
+                    </div>
+                    <div class="col-xxl-2 col-md-2">
+                        <div>
+                            <label for="EndDate" class="form-label">End Date</label>
+                            <input type="date" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" id="EndDate" name='end_date'>
+                        </div>
+                    </div>
+                    {% if request.session.teamIDs %}
+                        <div class="col-md-2" hidden>
+                            <label class="form-label">Team</label>
+                            <select class="form-control" name="team_name" id="teamSelect">
+                                <option value='Select Team'>Select Team</option>
+                                {% for team in teams %}                                    
+                                <option value="{{ team.id }}" data-team-name="{{ team.T_name }}">{{ team.T_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2" hidden>
+                            <label class="form-label">Member</label>
+                            <select class="form-control" name="member" id="memberSelect" > 
+                                <option value="Select Member">Select Member</option>
+                                {% for member_name in members %}                                    
+                                <option value="{{ member_name.id }}">{{ member_name.member_name }}</option>
+                                {% endfor %}
+                            </select>                        
+                        </div>
+
+                    {% else %}
+                        <div class="col-md-2">
+                            <label class="form-label">Team</label>
+                            <select class="form-control" name="team_name" id="teamSelect">
+                                <option value='Select Team'>Select Team</option>
+                                {% for team in teams %}                                    
+                                <option value="{{ team.id }}" data-team-name="{{ team.T_name }}">{{ team.T_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Member</label>
+                            <select class="form-control" name="member" id="memberSelect" > 
+                                <option value="Select Member">Select Member</option>
+                                {% for member_name in members %}                                    
+                                <option value="{{ member_name.id }}">{{ member_name.member_name }}</option>
+                                {% endfor %}
+                            </select>                        
+                        </div>
+                    {% endif %}                        
+                </div>           
+            </form>
+            {% comment %} <div class="col-1 align-items-right" style='margin-top:10px;'>                
+                <button class=' btn-info waves-effect waves-light' id="generatePdfBtn"><i class="ri-file-pdf-fill"></i></button>
+            </div> {% endcomment %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            {% comment %} <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Lead Funnel</h4>                
+            </div> {% endcomment %}
+            <div class="card-body">               
+                <div class="live-preview">
+                    <div class="table-responsive table-card">
+                        <table class="table align-middle table-nowrap mb-0" id="leadfunnel-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" class='text-center' >S.No.</th>
+                                    <a href='javascript:void(0);' style='color:#212529;'><th scope="col" class='text-center sort'>NAME</th></a>
+                                    <a href='javascript:void(0);' style='color:#212529;'><th scope="col" class='text-center sort' id='total-lead'>TOTAL LEADS</th></a>
+                                    <a href='javascript:void(0);' style='color:#212529;'><th scope="col" class='text-center'>NEW LEADS ADDED</th></a>
+                                    <a href='javascript:void(0);' style='color:#212529;'><th scope="col" class='text-center' id='hot-lead'>HOT LEADS</th></a>
+                                    <th scope="col" class='text-center'>1<sup>st</sup> SITE VISITS</th>
+                                    <th scope="col" class='text-center'>2<sup>nd</sup> SITE VISITS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leadfunnel-table-body" class='text-center'>
+
+                              
+                            </tbody>
+                        </table>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+    {% comment %} window.onload = function() {
+        if (!document.getElementById("teamSelect").value) {
+            loadLeadFunnelData();            
+           }
+    }; {% endcomment %}
+
+    function displayTotalSum() {
+        var tableBody = document.getElementById("leadfunnel-table-body");
+        var rows = tableBody.getElementsByTagName("tr");
+    
+        var totalLeads = 0;
+        var newLeads = 0;
+        var hotLeads = 0;
+        var firstSiteVisits = 0;
+        var secondSiteVisits = 0;
+    
+        var rowsPopulated = true;
+        //console.log('=====================================================')
+        
+        for (var i = 0; i < rows.length; i++) {
+            var cells = rows[i].getElementsByTagName("td");
+            if (cells.length < 7) {
+                rowsPopulated = false;
+                break;
+            }
+        }
+    
+        if (rowsPopulated) {
+            
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName("td");
+                if (cells.length > 1) {
+                    totalLeads += parseInt(cells[2].textContent);
+                    newLeads += parseInt(cells[3].textContent);
+                    hotLeads += parseInt(cells[4].textContent);
+                    firstSiteVisits += parseInt(cells[5].textContent);
+                    secondSiteVisits += parseInt(cells[6].textContent);
+                }
+            }
+    
+           
+            var newRow = document.createElement("tr");
+            newRow.innerHTML = "<td colspan='2'>Total</td>" +
+                "<td class='text-center'>" + totalLeads + "</td>" +
+                "<td class='text-center'>" + newLeads + "</td>" +
+                "<td class='text-center'>" + hotLeads + "</td>" +
+                "<td class='text-center'>" + firstSiteVisits + "</td>" +
+                "<td class='text-center'>" + secondSiteVisits + "</td>";
+    
+            
+            tableBody.insertBefore(newRow, tableBody.firstChild);
+            
+        } else {
+            
+            setTimeout(displayTotalSum, 100);
+        }
+    }
+    
+    function Table(mainData){
+        mainData.forEach(function(lead, index) {
+            var rowIndex = index; 
+            var tableBody = document.getElementById("leadfunnel-table-body");
+            var row = tableBody.rows[rowIndex];
+            if (!row) {
+                row = tableBody.insertRow(rowIndex);
+                for (var i = 0; i < 7; i++) {
+                    row.insertCell(i);
+                }
+                row.cells[0].textContent = rowIndex + 1; 
+            }
+            
+            var cells = row.cells;
+            cells[1].innerHTML = "<a class='fw-medium' href='javascript:void(0);'>"  + lead.HandledByEmployee + "</a>";
+            cells[2].textContent = lead.total_leads;
+            cells[3].textContent = lead.new_leads;
+            cells[4].textContent = lead.hot_leads;
+            cells[5].textContent = lead.first_site_visits;
+            cells[6].textContent = lead.second_site_visits;
+        });
+    }
+
+    function clearLeadFunnelTable() {
+        var tableBody = document.getElementById("leadfunnel-table-body");
+        tableBody.innerHTML = ""; 
+    }
+
+
+    
+//==============================================================================//
+
+window.onload = function() {
+    LeadFunnel('');
+};
+
+function updateMemberDropdown(members, selectedMember) {
+    var memberSelect = document.getElementById("memberSelect");
+    memberSelect.innerHTML = "<option value=''>Select Member</option>";
+    members.forEach(function(member) {
+        var option = document.createElement("option");
+        option.value = member.id;
+        option.textContent = member;
+        if (member === selectedMember) {
+            option.selected = true;
+        }
+        memberSelect.appendChild(option);
+    });
+}
+
+
+
+document.getElementById("memberSelect").addEventListener("change", function(event){
+    var memberName = event.target.options[event.target.selectedIndex].text;
+    var startDate = document.getElementById("StartDate").value;
+    var endDate = document.getElementById("EndDate").value;
+    var selectedTeamId = document.getElementById('teamSelect').value;
+    if (!startDate && !endDate) {
+        if (memberName !== 'Select Member' && selectedTeamId !== 'Select Team') {                
+            clearLeadFunnelTable();                 
+            var queryString = "?member=" + memberName + '&team=' + selectedTeamId;
+            //console.log('================', queryString)
+            LeadFunnel(queryString);
+        }      
+        else if (memberName !== 'Select Member') {                
+            clearLeadFunnelTable();                 
+            var queryString = "?member=" + memberName ;
+            //console.log('================', queryString)
+            LeadFunnel(queryString);
+        }                        
+        else {
+            LeadFunnel('');
+        }
+    }
+    else {
+        if (startDate && endDate && memberName !== 'Select Member'  && selectedTeamId !== 'Select Team') {                
+            clearLeadFunnelTable();                 
+            var queryString = '?start_date=' + startDate + '&end_date=' + endDate + "&member=" + memberName + '&team=' + selectedTeamId;
+            //console.log('================', queryString)
+            LeadFunnel(queryString);
+        }     
+        else if (startDate && endDate && memberName !== 'Select Member' ) {
+            var queryString = '?start_date=' + startDate + '&end_date=' + endDate + '&member=' + memberName  ;
+            clearLeadFunnelTable();
+            //console.log('================', queryString)
+            LeadFunnel(queryString);
+        }
+        else  {
+            LeadFunnel('');
+        }
+    }
+});
+document.getElementById("StartDate").addEventListener("change", function(event){
+    date();
+});
+document.getElementById("EndDate").addEventListener("change", function(event){
+    date();
+});
+
+function date(){
+    var startDate = document.getElementById("StartDate").value;
+    var endDate = document.getElementById("EndDate").value;
+    var selectedTeamId = document.getElementById('teamSelect').value;
+
+    if (startDate && endDate && selectedTeamId !== 'Select Team') {
+        var queryString = '?start_date=' + startDate + '&end_date=' + endDate + '&team=' + selectedTeamId  ;
+        clearLeadFunnelTable();
+      // console.log('================', queryString)
+      LeadFunnel(queryString);
+    }
+    else if (startDate && endDate) {
+        var queryString = '?start_date=' + startDate + '&end_date=' + endDate;
+        clearLeadFunnelTable();
+      //  console.log('================', queryString)
+      LeadFunnel(queryString);
+    }        
+}
+
+document.getElementById("teamSelect").addEventListener("change", function(event){
+    var memberName = document.getElementById("memberSelect").options[document.getElementById("memberSelect").selectedIndex].text;
+    var startDate = document.getElementById("StartDate").value;
+    var endDate = document.getElementById("EndDate").value;
+    var selectedTeamId = event.target.value;
+    
+    if (!startDate && !endDate) {
+        // console.log('====', selectedTeamId)
+         if(selectedTeamId !== 'Select Team'){
+            clearLeadFunnelTable();
+            var queryString = '?team=' + selectedTeamId ;
+            // console.log('================', queryString)
+            LeadFunnel(queryString);
+        }            
+        else {
+            LeadFunnel('');
+        }
+    }
+    else {
+        if (startDate && endDate && selectedTeamId !== 'Select Team') {
+            var queryString = '?start_date=' + startDate + '&end_date=' + endDate + '&team=' + selectedTeamId  ;
+            clearLeadFunnelTable();
+            //console.log('================', queryString)
+            LeadFunnel(queryString);
+        }
+        else {
+            LeadFunnel('');
+        }
+    }
+});
+
+function LeadFunnel(queryString) {         
+    var xhr = new XMLHttpRequest();
+    loader();
+    console.log(queryString)
+    xhr.open("GET", "{% url 'L_Funnel' %}" + queryString, true);
+    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+    xhr.onreadystatechange = function () {
+        loaderClose();
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var responseData = JSON.parse(xhr.responseText);
+            var mainData = responseData.leadfunnelData;  
+            var members = responseData.members;         
+            var tableBody = document.getElementById("leadfunnel-table-body");    
+            updateMemberDropdown(members)
+            clearLeadFunnelTable();
+            Table(mainData);
+            displayTotalSum();
+        }
+        
+    };
+    xhr.send();
+}
+
+//==============================================================================//
+
+document.getElementById("leadfunnel-table-body").addEventListener("click", function(event) {
+        var target = event.target;
+        if (target.tagName === "A" && target.classList.contains("fw-medium")) {
+            var name = target.textContent.trim();
+            var startDate = document.getElementById("StartDate").value;
+            var endDate = document.getElementById("EndDate").value;
+    
+            var host = window.location.hostname;
+            var relativeUrl = "/admin/employee/" + encodeURIComponent(name);
+            if (startDate || endDate) {
+                relativeUrl += "?";
+                if (startDate) {
+                    relativeUrl += "start_date=" + startDate;
+                }
+                if (endDate) {
+                    if (startDate) {
+                        relativeUrl += "&";
+                    }
+                    relativeUrl += "end_date=" + endDate;
+                }
+            }
+            var url = "http://" + host + ':8000' + relativeUrl;
+            window.location.href = url;
+        }
+    });
+    
+
+    
+</script>
+
+{% endblock %}

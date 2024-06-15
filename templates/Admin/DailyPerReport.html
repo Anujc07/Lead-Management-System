@@ -1,0 +1,594 @@
+{% extends 'Admin/base.html' %}
+{% block content %}
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0">Daily Performance Report</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    
+                    <li class="breadcrumb-item active">DPR</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-header">
+                
+                <form id="formdata" action="{% url 'DailyPerReport' %}" method="get">
+                    <div class="row">
+                        <div class="col-xxl-2 col-md-2">
+                            <div>
+                                <label for="StartDate" class="form-label">Start Date</label>
+                                <input type="date" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" id="StartDate" name='start_date'>
+                            </div>
+                        </div>
+                        <div class="col-xxl-2 col-md-2">
+                            <div>
+                                <label for="EndDate" class="form-label">End Date</label>
+                                <input type="date" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" id="EndDate" name='end_date'>
+                            </div>
+                        </div>
+                        {% if request.session.teamIDs %}
+                        <div class="col-md-2" hidden>
+                            <label class="form-label">Team</label>
+                            <select class="form-control" name="team_name" id='teamSelect'>
+                                <option>Select Team</option>
+                                {% for team in teams %}                                    
+                                <option value="{{ team.id }}">{{ team.T_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2" hidden>
+                            <label  class="form-label">Member</label>
+                            <select class="form-control" name="member" id='memberSelect'>
+                                <option value=''>Select Member</option>
+                                {% for member in members %}                                    
+                                <option value="{{ member.id }}">{{ member.member_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% else %}
+                        <div class="col-md-2">
+                            <label class="form-label">Team</label>
+                            <select class="form-control" name="team_name" id='teamSelect'>
+                                <option>Select Team</option>
+                                {% for team in teams %}                                    
+                                <option value="{{ team.id }}">{{ team.T_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label  class="form-label">Member</label>
+                            <select class="form-control" name="member" id='memberSelect'>
+                                <option value=''>Select Member</option>
+                                {% for member in members %}                                    
+                                <option value="{{ member.id }}">{{ member.member_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+                        
+                        
+                        
+                    </div>           
+                </form>
+            </div>
+            
+                
+           
+
+
+
+
+
+            <div class="card-body">               
+                <div class="live-preview">
+                    <div class="table-responsive table-card">
+                        <table class="table align-middle table-nowrap mb-0" id="DPR-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" class="text-center">S.No.</th>
+                                    <th scope="col" class="">NAME</th>
+                                    <th scope="col" class="text-center">BOOKINGS</th>
+                                    <th scope="col" class="text-center">NEW LEADS</th>
+                                    <th scope="col" class="text-center">SM LEADS</th>
+                                    <th scope="col" class="text-center">LEADS F/W</th>
+                                    <th scope="col" class="text-center">MISSED F/W</th>
+                                    <th scope="col" class="text-center">SM F/W</th>
+                                    <th scope="col" class="text-center">HOME VISITS</th>
+                                    <th scope="col" class="text-center">CORP. VISITS</th>
+                                </tr>
+                            </thead>
+                            <style>
+                                #DPR-table-body td{
+                                    text-align:center;
+                                }
+                                #custom-heading{
+                                    text-align:start;
+                                }
+                            </style>
+                            <tbody id='DPR-table-body'>
+                              
+                            </tbody>
+                        </table>
+                    </div>
+                </div>                
+            </div><!-- end card-body -->
+        </div><!-- end card -->
+    </div><!-- end col -->
+</div>
+
+
+<script>     
+
+    {% comment %} window.onload = function() {
+        DPRData(); 
+    }; {% endcomment %}
+
+    window.onload = function() {
+        DPR('');
+    };
+    
+    
+    
+function displayTotalSum() {
+    //console.log("=========")
+    var tableBody = document.getElementById("DPR-table-body");
+    var rows = tableBody.getElementsByTagName("tr");
+    var totalBookings = 0;
+    var totalNewLeads = 0;
+    var totalSMLeads = 0;
+    var totalLeadsFW = 0;
+    var totalMissedFW = 0;
+    var totalSMFW = 0;
+    var totalHomeVisits = 0;
+    var totalCorpVisits = 0;
+    for (var i = 0; i < rows.length; i++) {
+        var cells = rows[i].getElementsByTagName("td");
+        if (cells.length > 1) {
+            totalBookings += parseInt(cells[2].textContent);
+            totalNewLeads += parseInt(cells[3].textContent);
+            totalSMLeads += parseInt(cells[4].textContent);
+            totalLeadsFW += parseInt(cells[5].textContent);
+            totalMissedFW += parseInt(cells[6].textContent);
+            totalSMFW += parseInt(cells[7].textContent);
+            totalHomeVisits += parseInt(cells[8].textContent);
+            totalCorpVisits += parseInt(cells[9].textContent);
+        }
+    }
+    var newRow = document.createElement("tr");
+    newRow.innerHTML = "<td colspan='2'>Total</td>" +
+        "<td class='text-center'>" + totalBookings + "</td>" +
+        "<td class='text-center'>" + totalNewLeads + "</td>" +
+        "<td class='text-center'>" + totalSMLeads + "</td>" +
+        "<td class='text-center'>" + totalLeadsFW + "</td>" +
+        "<td class='text-center'>" + totalMissedFW + "</td>" +
+        "<td class='text-center'>" + totalSMFW + "</td>" +
+        "<td class='text-center'>" + totalHomeVisits + "</td>" +
+        "<td class='text-center'>" + totalCorpVisits + "</td>";
+        tableBody.insertBefore(newRow, tableBody.firstChild);
+}
+
+    
+
+
+
+function Table(mainData) {
+    mainData.forEach(function (lead, index) {
+        var rowIndex = index;
+        var tableBody = document.getElementById("DPR-table-body");
+        var row = tableBody.rows[rowIndex];
+
+        if (!row) {
+            row = tableBody.insertRow(rowIndex);
+            for (var i = 0; i < 10; i++) {
+                row.insertCell(i);
+            }
+            row.cells[0].textContent = rowIndex + 1;
+        }
+
+        var cells = row.cells;
+        var booked_target; 
+        var FW_target; 
+        var SM_FW_target; 
+        var home_visit_target; 
+        var Corp_visit_target; 
+        var targetArray = lead.target;
+        var date = new Date();
+        var currentDay = date.getDate();
+        var startDate = document.getElementById("StartDate").value;
+        var endDate = document.getElementById("EndDate").value;
+        
+        
+        //console.log(queryString)
+        if (startDate && endDate){
+            var start = new Date(startDate);
+            var end = new Date(endDate);
+            var timeDifference = end - start; 
+            var daysDifference = timeDifference / (1000 * 3600 * 24); 
+            
+        //    console.log(startDate)
+            targetArray.forEach(function(item) {
+                var target_id = item.Target_id;
+                var target = item.target;
+                var percentage;
+                if (target_id == 1) {      
+                    current_book_target = (target/25)*daysDifference;               
+                    percentage = (lead.booked_count / current_book_target)*100;
+                    booked_target = Math.floor(current_book_target);
+
+
+                   // console.log(booked_target)
+                    if (percentage < 60) {
+                        //cells[2].style.backgroundColor = 'red';
+                        cells[2].classList.add('bg-danger');
+                        cells[2].style.color = 'white'; 
+                    } else if (percentage >= 60 && percentage < 80) {
+                      //  cells[2].style.backgroundColor = 'yellow';
+                        cells[2].classList.add('bg-warning');
+                    }  else if (percentage > 80) {
+                        //cells[2].style.backgroundColor = 'green';
+                        cells[2].classList.add('bg-success');
+                        cells[2].style.color = 'white'; 
+                    }
+                } else if (target_id == 2) {
+                    current_corp_visit_target = (target/25)*daysDifference;
+                    percentage = (lead.corpo_visit / current_corp_visit_target) * 100;
+                    Corp_visit_target = Math.floor(current_corp_visit_target);
+                    if (percentage < 60) {
+                        //cells[9].style.backgroundColor = 'red';
+                        cells[9].classList.add('bg-danger');
+                        cells[9].style.color = 'white'; 
+                    } else if (percentage >= 60 && percentage < 80) {
+                       // cells[9].style.backgroundColor = 'yellow';
+                        cells[9].classList.add('bg-warning');
+                    }  else if (percentage > 80) {
+                      //  cells[9].style.backgroundColor = 'green';
+                        cells[9].classList.add('bg-success');
+                        cells[9].style.color = 'white'; 
+                    }
+                } else if (target_id == 3) {
+                    current_FW_target = (target/25)*daysDifference;
+                    FW_target =  Math.floor(current_FW_target);
+                    percentage = (lead.lead_FW / current_FW_target) * 100;
+                    if (percentage < 60) {
+                        //cells[5].style.backgroundColor = 'red';
+                        cells[5].classList.add('bg-danger');
+                        cells[5].style.color = 'white'; 
+                        cells[5].style.fontsize = '25px'; 
+                    } else if (percentage >= 60 && percentage < 80) {
+                      //  cells[5].style.backgroundColor = 'yellow';
+                        cells[5].classList.add('bg-warning');
+                    }  else if (percentage > 80) {
+                      //  cells[5].style.backgroundColor = 'green';
+                        cells[5].classList.add('bg-success');
+                        cells[5].style.color = 'white'; 
+                    }
+                } else if (target_id == 4) {
+                    current_home_visit_target = (target/25)*daysDifference;
+                    home_visit_target = Math.floor(current_home_visit_target);
+                    percentage = (lead.home_visit / current_home_visit_target) * 100;
+                    if (percentage < 60) {
+                        //cells[8].style.backgroundColor = 'red';
+                        cells[8].classList.add('bg-danger');
+                        cells[8].style.color = 'white'; 
+                    } else if (percentage >= 60 && percentage < 80) {
+                        //cells[8].style.backgroundColor = 'yellow';
+                        cells[8].classList.add('bg-warning');
+                    }  else if (percentage > 80) {
+                       // cells[8].style.backgroundColor = 'green';
+                        cells[8].classList.add('bg-success');
+                        cells[8].style.color = 'white'; 
+                    }
+                } else if (target_id == 5) {
+                    current_sm_fw_target = (target/25)*daysDifference;
+                    SM_FW_target =  Math.floor(current_sm_fw_target);
+                    percentage = (lead.sm_followup / current_sm_fw_target) * 100;
+                    if (percentage < 60) {
+                        //cells[7].style.backgroundColor = 'red';
+                        cells[7].classList.add('bg-danger');
+                        cells[7].style.color = 'white'; 
+                    } else if (percentage >= 60 && percentage < 80) {
+                       // cells[7].style.backgroundColor = 'yellow';
+                        cells[7].classList.add('bg-warning');
+                    }  else if (percentage > 80) {
+                       // cells[7].style.backgroundColor = 'green';
+                        cells[7].classList.add('bg-success');
+                        cells[7].style.color = 'white'; 
+                    }
+                }           
+            });
+        }else{
+         //   console.log('==============')
+            targetArray.forEach(function(item) {
+                var target_id = item.Target_id;
+                var target = item.target;
+                var percentage;
+                if (target_id == 1) {
+                    percentage = (lead.booked_count / target) * 100;
+                    booked_target = target;
+                    if (percentage < 60) {
+                        //cells[2].style.backgroundColor = 'red';
+                        cells[2].classList.add('bg-danger');
+                        cells[2].style.color = 'white'; 
+                    } else if (percentage >= 60 && percentage < 80) {
+                      //  cells[2].style.backgroundColor = 'yellow';
+                        cells[2].classList.add('bg-warning');
+                    }  else if (percentage > 80) {
+                        //cells[2].style.backgroundColor = 'green';
+                        cells[2].classList.add('bg-success');
+                        cells[2].style.color = 'white'; 
+                    }
+                } else if (target_id == 2) {
+                    percentage = (lead.corpo_visit / target) * 100;
+                    Corp_visit_target = target;
+                    if (percentage < 60) {
+                        //cells[9].style.backgroundColor = 'red';
+                        cells[9].classList.add('bg-danger');
+                        cells[9].style.color = 'white'; 
+                    } else if (percentage >= 60 && percentage < 80) {
+                       // cells[9].style.backgroundColor = 'yellow';
+                        cells[9].classList.add('bg-warning');
+                    }  else if (percentage > 80) {
+                        cells[9].classList.add('bg-success');
+                        cells[9].style.color = 'white'; 
+                    }
+                } else if (target_id == 3) {
+                    FW_target = target;
+                    percentage = (lead.lead_FW / target) * 100;
+                    if (percentage < 60) {
+                        //cells[5].style.backgroundColor = 'red';
+                        cells[5].classList.add('bg-danger');
+                 //       cells[5].style.color = 'white'; 
+                      //  cells[5].style.fontsize = '25px'; 
+                    } else if (percentage >= 60 && percentage < 80) {
+                      //  cells[5].style.backgroundColor = 'yellow';
+                        cells[5].classList.add('bg-warning');
+                    }  else if (percentage > 80) {
+                      //  cells[5].style.backgroundColor = 'green';
+                        cells[5].classList.add('bg-success');
+                        cells[5].style.color = 'white'; 
+                    }
+                } else if (target_id == 4) {
+                    home_visit_target = target;
+                    percentage = (lead.home_visit / target) * 100;
+                    if (percentage < 60) {
+                        //cells[8].style.backgroundColor = 'red';
+                        cells[8].classList.add('bg-danger');
+                        cells[8].style.color = 'white'; 
+                    } else if (percentage >= 60 && percentage <= 80) {
+                        //cells[8].style.backgroundColor = 'yellow';
+                        cells[8].classList.add('bg-warning');
+                    }  else if (percentage > 80) {
+                       // cells[8].style.backgroundColor = 'green';
+                        cells[8].classList.add('bg-success');
+                        cells[8].style.color = 'white'; 
+                    }
+                } else if (target_id == 5) {
+                    SM_FW_target = target;
+                    percentage = (lead.sm_followup / target) * 100;
+                    if (percentage < 60) {
+                        //cells[7].style.backgroundColor = 'red';
+                        cells[7].classList.add('bg-danger');
+                        cells[7].style.color = 'white'; 
+                    } else if (percentage >= 60 && percentage <= 80) {
+                       // cells[7].style.backgroundColor = 'yellow';
+                        cells[7].classList.add('bg-warning');
+                    }  else if (percentage > 80) {
+                      //  cells[7].style.backgroundColor = 'green';
+                        cells[7].classList.add('bg-success');
+                        cells[7].style.color = 'white'; 
+                    }
+                }           
+            });
+        }
+        
+
+        // Set other cell values
+        cells[1].innerHTML = lead.HandledByEmployee ? "<a class='fw-medium'>" + lead.HandledByEmployee + "</a>" : "No employee data available";
+        cells[2].textContent = `${lead.booked_count}/${booked_target || '0'}`;
+        //cells[2].textContent = `${lead.booked_count}`;
+        cells[3].textContent = lead.new_leads;
+        cells[4].textContent = lead.leadsSageMitra;
+        cells[5].textContent = `${lead.lead_FW}/${FW_target || '0'}`;
+        //cells[5].textContent = `${lead.lead_FW}`;
+        cells[6].textContent = lead.missed_followUp;
+        cells[7].textContent = `${lead.sm_followup}/${SM_FW_target || '0'}`;
+        cells[8].textContent = `${lead.home_visit}/${home_visit_target || '0'}`;
+        cells[9].textContent = `${lead.corpo_visit}/${Corp_visit_target || '0'}`;
+    });
+}
+
+        
+   
+    
+function clearDRPTable() {
+        var tableBody = document.getElementById("DPR-table-body");
+        tableBody.innerHTML = "";         
+}
+    
+
+
+function updateMemberDropdown(members) {
+        var memberSelect = document.getElementById("memberSelect");
+        memberSelect.innerHTML = "<option value=''>Select Member</option>";
+    //   console.log(members)
+        members.forEach(function(member) {
+            var option = document.createElement("option");
+            option.value = member[0];
+            option.textContent = member[0];
+            memberSelect.appendChild(option);
+        });
+}
+    
+    
+document.getElementById("memberSelect").addEventListener("change", function(event){
+    var memberName = event.target.options[event.target.selectedIndex].text;
+    var startDate = document.getElementById("StartDate").value;
+    var endDate = document.getElementById("EndDate").value;
+    var selectedTeamId = document.getElementById('teamSelect').value;
+    if (!startDate && !endDate) {
+         if (memberName !== 'Select Member' && selectedTeamId !== 'Select Team' ) {                
+            clearDRPTable();                 
+            var queryString = "?member=" + memberName + '&team=' + selectedTeamId ;
+            console.log('================', queryString)
+            DPR(queryString);
+             }                  
+            else if (memberName !== 'Select Member') {                
+            clearDRPTable();                 
+            var queryString = "?member=" + memberName ;
+            //console.log('================', queryString)
+            DPR(queryString);
+            }       
+        else {
+            location.reload();
+        }
+    }
+    else if(startDate && endDate && memberName !== 'Select Member' && selectedTeamId !== 'Select Team' ){
+        var queryString = '?start_date=' + startDate + '&end_date=' + endDate + '&member=' + memberName + '&team=' + selectedTeamId  ;
+        clearDRPTable();
+        //console.log('================', queryString)
+        DPR(queryString);
+    }
+    else {
+       if (startDate && endDate && memberName !== 'Select Member' ) {
+            var queryString = '?start_date=' + startDate + '&end_date=' + endDate + '&member=' + memberName  ;
+            clearDRPTable();
+    //        console.log('================', queryString)
+            DPR(queryString);
+
+        }
+        else  {
+            location.reload();
+        }
+    }
+});
+document.getElementById("StartDate").addEventListener("change", function(event){
+    date();
+});
+document.getElementById("EndDate").addEventListener("change", function(event){
+    date();
+});
+
+
+
+
+function date(){
+    var startDate = document.getElementById("StartDate").value;
+    var endDate = document.getElementById("EndDate").value;
+    var selectedTeamId = document.getElementById('teamSelect').value;
+
+    if (startDate && endDate && selectedTeamId !== 'Select Team') {
+        var queryString = '?start_date=' + startDate + '&end_date=' + endDate + '&team=' + selectedTeamId  ;
+        clearDRPTable();
+      // console.log('================', queryString)
+        DPR(queryString);
+    }
+    else if (startDate && endDate) {
+        var queryString = '?start_date=' + startDate + '&end_date=' + endDate;
+        clearDRPTable();
+      //  console.log('================', queryString)
+        DPR(queryString);
+    }        
+}
+
+
+
+document.getElementById("teamSelect").addEventListener("change", function(event){
+    var memberName = document.getElementById("memberSelect").options[document.getElementById("memberSelect").selectedIndex].text;
+    var startDate = document.getElementById("StartDate").value;
+    var endDate = document.getElementById("EndDate").value;
+    var selectedTeamId = event.target.value;
+    
+    if (!startDate && !endDate) {
+        // console.log('====', selectedTeamId)
+         if(selectedTeamId !== 'Select Team'){
+            clearDRPTable();
+            var queryString = '?team=' + selectedTeamId ;
+            // console.log('================', queryString)
+            DPR(queryString);
+        }            
+        else {
+            location.reload();
+        }
+    }
+    else {
+        if (startDate && endDate && selectedTeamId !== 'Select Team') {
+            var queryString = '?start_date=' + startDate + '&end_date=' + endDate + '&team=' + selectedTeamId  ;
+            clearDRPTable();
+            //console.log('================', queryString)
+            DPR(queryString);
+        }
+        else {
+            location.reload();
+        }
+    }
+});
+
+
+
+
+function DPR(queryString) {         
+    var xhr = new XMLHttpRequest();
+    
+    loader();
+  //  console.log(queryString)
+    xhr.open("GET", "{% url 'DPR' %}" + queryString, true);
+    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+    xhr.onreadystatechange = function () {
+        loaderClose();
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var responseData = JSON.parse(xhr.responseText);
+            var mainData = responseData.DPRData;     
+            var members = responseData.members;
+            var tableBody = document.getElementById("DPR-table-body");    
+            updateMemberDropdown(members)
+           // console.log(mainData)
+            clearDRPTable();
+            Table(mainData);
+            //color(mainData);
+            displayTotalSum();
+        }
+        
+    };
+    xhr.send();
+}
+    
+document.getElementById("DPR-table-body").addEventListener("click", function(event) {
+    var target = event.target;
+    if (target.tagName === "A" && target.classList.contains("fw-medium")) {
+        var name = target.textContent.trim();
+        var startDate = document.getElementById("StartDate").value;
+        var endDate = document.getElementById("EndDate").value;
+
+        var host = window.location.hostname;
+        var relativeUrl = "/admin/employee/" + encodeURIComponent(name);
+        if (startDate || endDate) {
+            relativeUrl += "?";
+            if (startDate) {
+                relativeUrl += "start_date=" + startDate;
+            }
+            if (endDate) {
+                if (startDate) {
+                    relativeUrl += "&";
+                }
+                relativeUrl += "end_date=" + endDate;
+            }
+        }
+        var url = "http://" + host + ':8000' + relativeUrl;
+        window.location.href = url;
+    }
+});
+    
+</script>
+{% endblock %}

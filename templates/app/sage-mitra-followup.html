@@ -1,0 +1,194 @@
+{% extends 'app/base.html' %}
+{% block content %}
+
+<style>
+    input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+</style>
+</head>
+    </head>
+    
+
+        <div class="container">
+            <div class="sect">
+               <h5 class="pagetitle">Sage Mitra Followup</h5>
+               <p>Feed Your Sage Mitra Followup Details.</p>
+               <div class="divider"></div>
+            </div>
+        </div> 
+        {% comment %} <div class='row'>
+            <div class='col s6' style='width:auto; margin-left:10%; display: contents; justify-content: center'>
+                {% if success_message %}
+                    <div class="success-messages" style='text-align:center; '>
+                        {{ success_message }}
+                        
+                    </div>
+                {% endif %}
+                {% if error_message %}
+                    <div id="error-message" class="error-messages" style='text-align:center; '>
+                        {{ error_message }}
+                        
+                    </div>
+                {% endif %}
+            </div>
+        </div> {% endcomment %}
+        
+
+        <!-- Form Section Starts -->
+        <div class="container">
+            <div class="section">
+                <form action='{% url 'SageMitra' %}' method='POST'>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="input-field col s12">
+                            {% comment %} <i class="mdi mdi-account prefix"></i> {% endcomment %}
+                            <input id="event_title11" type="text" name='name' required value="{{ request.session.first_name}}" disabled>
+                            <label for="event_title11">Your Name <span style='color:red; font-size:18px;'>*</span></label>
+                        </div>
+                    </div>
+
+                    {% comment %} <div class="row">
+                        <div class="input-field col s12">                                                       
+                            <input type="text" id="datepicker-input2" class="datepicker datepicker2" name='sm_name' required>
+                            <label for="datepicker-input2">SM Full Name <span style='color:red; font-size:18px;'>*</span></label>
+                        </div>
+                    </div> {% endcomment %}
+                    <div class="row">
+                        <label>Select Sage Mitra</label>
+                        <div class="input-field col s12">  
+                            <input list="data-list" id="datalist" name="sm_name" />                 
+                            <datalist id="data-list">                              
+                                {% for i in sm_list %}
+                                <option value="{{ i.0 }}"></option>
+                                {% endfor %}
+                                <option>Other</option>
+                            </datalist>                       
+                        </div>                
+                    </div>
+                    <div class="row" id="existingSMContactContainer" >
+                        <label>Sage Mitra Phone Number</label>
+                        <div class="input-field col s12">  
+                            <input type='Number' name="sm_contact" pattern="[6-9]{1}[0-9]{9}" title="Contact number should be 10 digits long and start with 6, 7, 8, or 9"/>
+                                        
+                        </div>                
+                    </div>
+                    {% comment %} <div class="row" id="existingSMContactContainer" >
+                        <label>Sage Mitra Phone Number</label>
+                        <div class="input-field col s12">  
+                            <input list="data-list2" id="datalist2" name="sm_contact" />
+                            <datalist id="data-list2">
+                                {% for i in sm_list %}
+                                <option value="{{ i.1 }}"></option>
+                                {% endfor %}                                
+                            </datalist>                       
+                        </div>                
+                    </div> {% endcomment %}
+                    <div class="row" id="otherSMNameContainer" style="display: none;">
+                        <div class="input-field col s12">                                                       
+                            <input type="text" id="datepicker-input2" class="datepicker datepicker2" name="new_sm_name">
+                            <label for="datepicker-input2">SM Full Name <span style="color:red; font-size:18px;">*</span></label>
+                        </div>
+                    </div>
+                    
+                    <div class="row" id="otherSMContactContainer" style="display: none;">
+                        <div class="input-field col s12">
+                            <input type="text" id="datepicker-input800" class="datepicker datepicker800" name='new_sm_contact' pattern="[6-9]{1}[0-9]{9}" title="Contact number should be 10 digits long and start with 6, 7, 8, or 9">
+                            <label for="datepicker-input800">Contact Number of SM <span style='color:red; font-size:18px;'>*</span></label>
+                        </div>
+                    </div>  
+                    
+                    
+                    
+                    
+                    {% comment %} <div class="row">
+                        <div class="input-field col s12">
+                           
+                            <input type="text" id="datepicker-input800" class="datepicker datepicker800" name='sm_contact' required pattern="[6-9]{1}[0-9]{9}" title="Contact number should be 10 digits long and start with 6, 7, 8, or 9">
+                            <label for="datepicker-input800">Contact Number of SM <span style='color:red; font-size:18px;'>*</span></label>
+                        </div>
+                    </div>   {% endcomment %}
+
+                    
+                    <div class="row">
+                        <div class="input-field col s12">
+                            {% comment %} <i class="mdi mdi-calendar prefix"></i> {% endcomment %}
+                            <input type="date" id="datepicker-input" class="datepicker datepicker" name="followup_date" onfocus=(this.type='date') onblur=(this.type='text') required>
+                            <label for="datepicker-input">Follow-Up Date <span style="color:red; font-size:18px;">*</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            {% comment %} <i class="mdi mdi-account-star prefix"></i> {% endcomment %}
+                            <input type="number" id="datepicker-input3" class="datepicker datepicker3" name='no_leads' required min="0">
+                            <label for="datepicker-input3">Number of Leads shared on this follow up <span style='color:red; font-size:18px;'>*</span></label>
+                        </div>
+                    </div>
+                    <div class="row">                        
+                        <div class="input-field col s12">
+                            <textarea id="textarea2" name='lead_Detail' class="materialize-textarea" data-length="1200"></textarea>
+                            <label for="textarea2">Lead Details /  Discussion </label>
+                          </div>
+                    </div>
+                   
+                    <div class="row">
+                        <div class="col s12">
+                            <button type='submit' class="waves-effect waves-light btn-large bg-primary">Save</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12">&nbsp;</div>
+                    </div>
+                </form>
+            </div>        
+        </div>
+        <!-- Form Section Ends -->
+
+      
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('datalist').addEventListener('change', function() {
+            var selectedOption = this.value;
+            if (selectedOption === 'Other') {
+                document.getElementById('otherSMNameContainer').style.display = 'block';
+                document.getElementById('otherSMContactContainer').style.display = 'block';
+                document.getElementById('existingSMContactContainer').style.display = 'none';
+            } else {
+                document.getElementById('otherSMNameContainer').style.display = 'none';
+                document.getElementById('otherSMContactContainer').style.display = 'none';
+                document.getElementById('existingSMContactContainer').style.display = 'block';
+            }
+        });
+    });
+    
+    
+    // Get today's date in the format YYYY-MM-DD
+    var today = new Date().toISOString().slice(0, 10);
+    
+    // Set the value of the date input field to today's date
+    document.getElementById('datepicker-input').value = today;
+
+  
+    function closeErrorMessage() {
+        var errorMessage = document.getElementById('error-message');
+        if (errorMessage) {
+            setTimeout(function() {
+                errorMessage.style.display = 'none';
+            }, 5000); 
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        closeSuccessMessage();
+        closeErrorMessage(); 
+    });
+        </script>
+ 
+{% endblock %}
