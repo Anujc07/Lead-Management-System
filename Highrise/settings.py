@@ -93,8 +93,8 @@ DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': 'acc_analytic',
-#         'USER': 'analytics',
-#         'PASSWORD': 'I2n7t9r@',
+#         'USER': '',
+#         'PASSWORD': '',
 #         'HOST': 'localhost',   
 #         'PORT': '3306',
 #     }
@@ -145,7 +145,6 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.210', '182.70.253.15', '192.168.1.17', '192.168.1.232']
 
 LOGIN_URL = '/app/login/'
 
