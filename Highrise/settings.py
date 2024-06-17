@@ -92,7 +92,7 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'acc_analytic',
+#         'NAME': '',
 #         'USER': '',
 #         'PASSWORD': '',
 #         'HOST': 'localhost',   
